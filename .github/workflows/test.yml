@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  pull_request:
+
+jobs:
+  frontend-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Install Deps
+        run: pnpm install
+      - name: Lint
+        run: pnpm lint
+      - name: Test
+        run: pnpm test
