@@ -9,10 +9,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Install Node
-        uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v2
         with:
-          node-version: '20.x'
+          version: 8
       - name: Install Deps
         run: pnpm install
       - name: Lint
