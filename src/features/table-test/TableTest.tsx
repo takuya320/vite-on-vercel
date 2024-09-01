@@ -60,7 +60,7 @@ const prefectures: Prefecture[] = [
   },
 ]
 
-const columns: ColumnDef<Prefecture, any>[] = [
+const columns: ColumnDef<Prefecture>[] = [
   {
     accessorKey: 'name',
     header: '都道府県',
