@@ -1,7 +1,7 @@
 import React from 'react'
 import SampleComponent from './components/SampleComponent'
 
-const ComponentTest = () => {
+const ComponentTest: React.FC = () => {
   return (
     <React.Fragment>
       <SampleComponent title={'Component 1'} />
@@ -10,5 +10,4 @@ const ComponentTest = () => {
     </React.Fragment>
   )
 }
-
 export default ComponentTest
