@@ -1,6 +1,6 @@
-import React from 'react'
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import React from 'react'
 
 type Prefecture = {
   // 都道府県名
@@ -96,7 +96,7 @@ const TableTest: React.FC = () => {
   return (
     <React.Fragment>
       <TableContainer>
-        <Table>
+        <Table variant="striped" colorScheme="teal">
           <Thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>
