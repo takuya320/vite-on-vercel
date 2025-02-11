@@ -58,6 +58,14 @@ const prefectures: Prefecture[] = [
     timeFromTokyo: 120,
     costFromTokyo: 12000,
   },
+  {
+    name: '静岡県',
+    capital: '静岡',
+    population: 3637998,
+    area: 7777.63,
+    timeFromTokyo: 60,
+    costFromTokyo: 6000,
+  },
 ]
 
 const columns: ColumnDef<Prefecture>[] = [
