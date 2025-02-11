@@ -95,13 +95,13 @@ const TableTest: React.FC = () => {
   })
   return (
     <React.Fragment>
-      <TableContainer>
-        <Table variant="striped" colorScheme="teal">
+      <TableContainer overflowX="auto">
+        <Table variant="striped" colorScheme="teal" size="md" boxShadow="md">
           <Thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <Th key={header.id}>
+                  <Th key={header.id} textTransform="uppercase" fontWeight="bold">
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </Th>
                 ))}
@@ -112,7 +112,9 @@ const TableTest: React.FC = () => {
             {table.getRowModel().rows.map((row) => (
               <Tr key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <Td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Td>
+                  <Td key={cell.id} textAlign="center" padding="4">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </Td>
                 ))}
               </Tr>
             ))}
