@@ -12,7 +12,7 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.10.6",
+    "@chakra-ui/react": "^2.10.7",
     "@tanstack/react-table": "^8.21.2",
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
@@ -27,7 +27,7 @@
     "@vitest/coverage-v8": "^2.1.9",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
-    "vite": "^6.2.1",
+    "vite": "^6.2.2",
     "vitest": "^2.1.9"
   }
 }
