@@ -59,11 +59,17 @@ export default function KpiCard({ kpi, invert = false, index = 0, loading = fals
           label={kpi.helpText}
           placement="top"
           hasArrow
-          fontFamily="var(--dash-font-body)"
+          fontFamily="'Plus Jakarta Sans', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif"
           fontSize="12px"
-          bg="var(--dash-ink)"
-          color="var(--dash-bg)"
-          maxW="260px"
+          fontWeight={500}
+          lineHeight="1.5"
+          bg="#181410"
+          color="#F3EDE0"
+          px="10px"
+          py="8px"
+          borderRadius="6px"
+          maxW="280px"
+          boxShadow="0 8px 24px -8px rgba(24, 20, 16, 0.35)"
         >
           <span className="dash-kpi__help" aria-label="指標の説明" onClick={(e) => e.stopPropagation()}>
             ?
