@@ -7,10 +7,29 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
+*.tsbuildinfo
+
+# Test / coverage
+coverage
+
+# Environment variables
+# .env.example だけはリポジトリへコミット可 (テンプレ用)
+.env
+.env.*
+!.env.example
 *.local
+
+# Vercel CLI (vercel link / vercel env pull)
+.vercel
+
+# Playwright MCP screenshots & snapshots
+.playwright-mcp
 
 # Editor directories and files
 .vscode/*

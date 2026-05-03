@@ -12,6 +12,7 @@ function App() {
       <header className="app-header">
         <nav className="app-nav">
           <Link to="/">Home</Link>
+          <Link to="/dashboard">Dashboard</Link>
           <Link to="/component-test">Component Test</Link>
           <Link to="/table-test">Table Test</Link>
           <Link to="/button-test">Button Test</Link>
