@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 `README.md` の "Scripts" にユーザー向けのコマンド一覧があります。Claude が実行する際の注意点のみここに記載します。
 
 - **pnpm のバージョンは `pnpm@10.33.2` に固定**（`package.json#packageManager`）。ローカルの pnpm が古いと `ERR_PNPM_BAD_PM_VERSION` で即失敗するため、その場合は `corepack pnpm <subcommand>` で実行する。`pnpm install` が通っていない状態でも検証は可能。
-- **Node.js は `>=22.0.0`**（`.nvmrc` = `22`、Vite 8 の Node 20.19+ 要件に追従）。CI では `actions/setup-node` が `.nvmrc` を読むため、ローカルの Node とずれるとローカルでは通っても CI で落ちることがある。
+- **Node.js は `>=24.0.0`**（`.nvmrc` = `24`、Node 24 LTS で Vercel のデフォルトに整合）。CI では `actions/setup-node` が `.nvmrc` を読むため、ローカルの Node とずれるとローカルでは通っても CI で落ちることがある。
 - **単一テストの実行**: `pnpm vitest run <pathOrPattern>` または `pnpm vitest run -t '<test name pattern>'`。watch したいときは `pnpm vitest <path>`（`run` を外す）。
 - **CI で必ず走る最終チェック**: `pnpm lint` → `pnpm test` の順。コード変更後は両方を必ず手元で通すこと。
 

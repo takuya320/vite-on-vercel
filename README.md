@@ -27,7 +27,7 @@ Next.js / Remix のような SSR フレームワークではなく、あえて *
 
 ## Requirements
 
-- **Node.js `>=22.0.0`** (`.nvmrc` で `22` を指定 / Vite 8 が Node 20.19+ を要求するため LTS の 22 を採用)
+- **Node.js `>=24.0.0`** (`.nvmrc` で `24` を指定 / Node 24 LTS、Vercel のデフォルトランタイムに整合)
 - **pnpm 10** (`package.json` の `packageManager` で固定)
 
 `nvm` 利用者は `nvm use` で `.nvmrc` のバージョンに切り替わります。
