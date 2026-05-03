@@ -57,30 +57,33 @@ pnpm dev
 
 | Path              | コンポーネント                            |
 | ----------------- | ----------------------------------------- |
-| `/`               | `src/App.tsx`                             |
+| `/`               | `src/features/dashboard/Dashboard.tsx`    |
 | `/component-test` | `src/features/component-test/...`         |
 | `/table-test`     | `src/features/table-test/...`             |
 | `/button-test`    | `src/features/button-test/...`            |
 
-ルーティング定義は `src/router.tsx` にあります。
+ルーティング定義は `src/router.tsx` にあります。トップページは業務ダッシュボード。`/component-test` 等は UI コンポーネントの動作確認用。
 
 ## Project Structure
 
 ```
 src/
-├─ App.tsx              # トップページ
 ├─ main.tsx             # エントリポイント (RouterProvider + Analytics)
 ├─ router.tsx           # React Router 定義
 ├─ features/            # 機能単位のページ
+│  ├─ dashboard/
+│  │  ├─ Dashboard.tsx        # ルートコンポーネント (PascalCase = 機能名)
+│  │  ├─ dashboard.css        # Dashboard 局所スコープのスタイル
+│  │  ├─ data.ts              # ダミーデータ
+│  │  └─ components/          # 機能内で閉じる UI 部品
 │  ├─ button-test/
-│  │  ├─ ButtonTest.tsx     # ルートコンポーネント (PascalCase = 機能名)
-│  │  └─ components/        # 機能内で閉じる UI 部品
+│  │  ├─ ButtonTest.tsx
+│  │  └─ components/
 │  ├─ component-test/
 │  │  ├─ ComponentTest.tsx
 │  │  └─ components/
 │  └─ table-test/
 │     └─ TableTest.tsx
-├─ assets/
 └─ test/                # Vitest 用ユーティリティ
 ```
 
