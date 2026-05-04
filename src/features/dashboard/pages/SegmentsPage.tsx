@@ -1,7 +1,7 @@
 import { useToast } from '@chakra-ui/react'
 import { useMemo } from 'react'
 import PageHeader from '../components/PageHeader'
-import { segments, users } from '../data'
+import { segments } from '../data'
 import { useOrg } from '../orgContext'
 
 export default function SegmentsPage() {
@@ -77,44 +77,37 @@ export default function SegmentsPage() {
                 <th>説明</th>
                 <th>対象ユーザー</th>
                 <th>条件数</th>
-                <th>所有者</th>
                 <th>更新</th>
               </tr>
             </thead>
             <tbody>
-              {orgSegments.map((s) => {
-                const owner = users.find((u) => u.id === s.ownerId)
-                return (
-                  <tr
-                    key={s.id}
-                    tabIndex={0}
-                    onClick={() => openSegment(s.name)}
-                    onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openSegment(s.name))}
-                  >
-                    <td>
-                      <div style={{ fontWeight: 600 }}>{s.name}</div>
-                      <div className="dash-table__id" style={{ marginTop: 2 }}>
-                        {s.id}
-                      </div>
-                    </td>
-                    <td>
-                      <p className="dash-table__summary">{s.description}</p>
-                    </td>
-                    <td>
-                      <span className="dash-table__service">{s.userCount.toLocaleString()}</span>
-                    </td>
-                    <td>
-                      <span className="dash-meta-pill">{s.filterCount}</span>
-                    </td>
-                    <td>
-                      <span className="dash-table__owner">{owner?.name ?? '—'}</span>
-                    </td>
-                    <td>
-                      <span className="dash-table__time">{s.updatedAt}</span>
-                    </td>
-                  </tr>
-                )
-              })}
+              {orgSegments.map((s) => (
+                <tr
+                  key={s.id}
+                  tabIndex={0}
+                  onClick={() => openSegment(s.name)}
+                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openSegment(s.name))}
+                >
+                  <td>
+                    <div style={{ fontWeight: 600 }}>{s.name}</div>
+                    <div className="dash-table__id" style={{ marginTop: 2 }}>
+                      {s.id}
+                    </div>
+                  </td>
+                  <td>
+                    <p className="dash-table__summary">{s.description}</p>
+                  </td>
+                  <td>
+                    <span className="dash-table__service">{s.userCount.toLocaleString()}</span>
+                  </td>
+                  <td>
+                    <span className="dash-meta-pill">{s.filterCount}</span>
+                  </td>
+                  <td>
+                    <span className="dash-table__time">{s.updatedAt}</span>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

@@ -1,8 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import Dashboard from './features/dashboard/Dashboard.tsx'
 import AuditPage from './features/dashboard/pages/AuditPage.tsx'
-import IncidentsPage from './features/dashboard/pages/IncidentsPage.tsx'
-import JobsPage from './features/dashboard/pages/JobsPage.tsx'
+import InterventionsPage from './features/dashboard/pages/InterventionsPage.tsx'
 import MembersPage from './features/dashboard/pages/MembersPage.tsx'
 import MetricsPage from './features/dashboard/pages/MetricsPage.tsx'
 import OrganizationsPage from './features/dashboard/pages/OrganizationsPage.tsx'
@@ -19,8 +18,7 @@ export const router = createBrowserRouter([
       { path: 'metrics', element: <MetricsPage /> },
       { path: 'organizations', element: <OrganizationsPage /> },
       { path: 'segments', element: <SegmentsPage /> },
-      { path: 'incidents', element: <IncidentsPage /> },
-      { path: 'jobs', element: <JobsPage /> },
+      { path: 'interventions', element: <InterventionsPage /> },
       { path: 'audit', element: <AuditPage /> },
       { path: 'members', element: <MembersPage /> },
       { path: 'settings', element: <SettingsPage /> },

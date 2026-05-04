@@ -312,14 +312,14 @@ export const kpisByOrg: Record<string, Kpi[]> = {
       helpText: '直近30日間に1回以上ログインしたユニークユーザー数。',
     },
     {
-      id: 'errors',
-      label: '5xx エラー',
-      value: '312',
-      unit: 'incidents',
-      delta: 38.6,
+      id: 'stickiness',
+      label: 'スティッキネス',
+      value: '34.2',
+      unit: '%',
+      delta: 1.8,
       trend: 'up',
-      spark: [12, 14, 11, 18, 22, 19, 25, 28, 30, 33, 41, 48],
-      helpText: 'バックエンドが返した 5xx 系の総数。0.1% を超えた場合はオンコールへ即連携。',
+      spark: [30, 31, 30, 31, 32, 32, 31, 32, 33, 33, 34, 34],
+      helpText: 'DAU / MAU 比率。日次アクティブが月次アクティブの何%かを示す習慣化の指標。30% 以上が健全な水準。',
     },
   ],
   'o-kitazawa': [
@@ -353,14 +353,14 @@ export const kpisByOrg: Record<string, Kpi[]> = {
       helpText: '直近30日間に1回以上ログインしたユニークユーザー数。',
     },
     {
-      id: 'errors',
-      label: '5xx エラー',
-      value: '47',
-      unit: 'incidents',
-      delta: -12.0,
-      trend: 'down',
-      spark: [20, 22, 19, 18, 16, 15, 14, 13, 11, 10, 9, 9],
-      helpText: 'バックエンドが返した 5xx 系の総数。0.1% を超えた場合はオンコールへ即連携。',
+      id: 'stickiness',
+      label: 'スティッキネス',
+      value: '28.5',
+      unit: '%',
+      delta: 0.4,
+      trend: 'up',
+      spark: [27, 27, 28, 28, 27, 28, 28, 28, 28, 29, 28, 29],
+      helpText: 'DAU / MAU 比率。日次アクティブが月次アクティブの何%かを示す習慣化の指標。30% 以上が健全な水準。',
     },
   ],
   'o-hanazono': [
@@ -394,14 +394,14 @@ export const kpisByOrg: Record<string, Kpi[]> = {
       helpText: '直近30日間に1回以上ログインしたユニークユーザー数。',
     },
     {
-      id: 'errors',
-      label: '5xx エラー',
-      value: '188',
-      unit: 'incidents',
-      delta: 4.2,
+      id: 'stickiness',
+      label: 'スティッキネス',
+      value: '41.2',
+      unit: '%',
+      delta: 2.4,
       trend: 'up',
-      spark: [22, 24, 23, 25, 26, 27, 26, 28, 29, 31, 30, 32],
-      helpText: 'バックエンドが返した 5xx 系の総数。0.1% を超えた場合はオンコールへ即連携。',
+      spark: [36, 37, 37, 38, 38, 39, 39, 40, 40, 40, 41, 41],
+      helpText: 'DAU / MAU 比率。日次アクティブが月次アクティブの何%かを示す習慣化の指標。30% 以上が健全な水準。',
     },
   ],
   'o-mishima': [
@@ -435,14 +435,14 @@ export const kpisByOrg: Record<string, Kpi[]> = {
       helpText: '直近30日間に1回以上ログインしたユニークユーザー数。',
     },
     {
-      id: 'errors',
-      label: '5xx エラー',
-      value: '4',
-      unit: 'incidents',
-      delta: 33.3,
-      trend: 'up',
-      spark: [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4],
-      helpText: 'バックエンドが返した 5xx 系の総数。0.1% を超えた場合はオンコールへ即連携。',
+      id: 'stickiness',
+      label: 'スティッキネス',
+      value: '18.4',
+      unit: '%',
+      delta: -0.6,
+      trend: 'down',
+      spark: [20, 20, 19, 20, 19, 19, 19, 19, 18, 19, 18, 18],
+      helpText: 'DAU / MAU 比率。日次アクティブが月次アクティブの何%かを示す習慣化の指標。30% 以上が健全な水準。',
     },
   ],
 }
@@ -512,172 +512,171 @@ export const rankingByOrg: Record<string, RankingItem[]> = {
 }
 
 // =====================================================
-// Operations: incidents / jobs / audit
+// Admin interventions — Admin がサービスへ実施した介入の記録
 // =====================================================
 
-export type IncidentStatus = 'open' | 'investigating' | 'mitigated' | 'resolved'
+export type InterventionType =
+  | 'impersonate'
+  | 'data_correction'
+  | 'plan_change'
+  | 'feature_flag'
+  | 'message_sent'
+  | 'support_ticket'
+  | 'account_suspend'
+  | 'refund'
 
-export type Incident = {
+export const INTERVENTION_TYPE_LABEL: Record<InterventionType, string> = {
+  impersonate: 'なりすまし操作',
+  data_correction: 'データ修正',
+  plan_change: 'プラン変更',
+  feature_flag: 'フィーチャーフラグ',
+  message_sent: 'メッセージ配信',
+  support_ticket: 'サポート対応',
+  account_suspend: 'アカウント停止',
+  refund: '返金処理',
+}
+
+export type InterventionImpact = 'low' | 'medium' | 'high'
+export type InterventionStatus = 'requested' | 'in_progress' | 'completed' | 'rolled_back'
+
+export type Intervention = {
   id: string
   organizationId: string
-  occurredAt: string
-  service: string
+  performedAt: string
+  type: InterventionType
+  target: string
   summary: string
-  severity: 'P1' | 'P2' | 'P3'
-  status: IncidentStatus
-  owner: string
+  impact: InterventionImpact
+  status: InterventionStatus
+  adminName: string
 }
 
-export const incidents: Incident[] = [
+export const interventions: Intervention[] = [
   // o-aoyama
   {
-    id: 'INC-2841',
+    id: 'IV-2841',
     organizationId: 'o-aoyama',
-    occurredAt: '2026-05-04 02:14',
-    service: 'checkout-api',
-    summary: '決済認可APIの p99 レイテンシが SLO を 12 分間超過',
-    severity: 'P1',
-    status: 'investigating',
-    owner: '中村 翔',
+    performedAt: '2026-05-04 09:14',
+    type: 'impersonate',
+    target: 'admin@aoyama.example',
+    summary: 'チェックアウト不具合再現のため admin アカウントへ impersonate 実施',
+    impact: 'medium',
+    status: 'completed',
+    adminName: '中村 翔',
   },
   {
-    id: 'INC-2840',
+    id: 'IV-2840',
     organizationId: 'o-aoyama',
-    occurredAt: '2026-05-04 00:51',
-    service: 'search-indexer',
-    summary: 'インデックス再構築ジョブが 3 回連続で失敗',
-    severity: 'P2',
-    status: 'mitigated',
-    owner: '佐藤 花子',
+    performedAt: '2026-05-04 08:51',
+    type: 'data_correction',
+    target: 'order_id=ORD-9281',
+    summary: '重複登録された注文 4 件を統合し、課金額を再計算',
+    impact: 'medium',
+    status: 'completed',
+    adminName: '佐藤 花子',
   },
   {
-    id: 'INC-2839',
+    id: 'IV-2839',
     organizationId: 'o-aoyama',
-    occurredAt: '2026-05-03 22:08',
-    service: 'notification-worker',
-    summary: 'Slack Webhook がレート制限に到達 / バックオフ動作中',
-    severity: 'P3',
-    status: 'open',
-    owner: '鈴木 一郎',
+    performedAt: '2026-05-04 06:08',
+    type: 'plan_change',
+    target: 'org=Aoyama Holdings',
+    summary: 'Standard → Enterprise へ手動アップグレード(顧客リクエスト)',
+    impact: 'high',
+    status: 'completed',
+    adminName: '山田 太郎',
   },
   {
-    id: 'INC-2838',
+    id: 'IV-2838',
     organizationId: 'o-aoyama',
-    occurredAt: '2026-05-03 19:42',
-    service: 'billing-job',
-    summary: '請求バッチで 4 件の重複レコードを検知',
-    severity: 'P2',
-    status: 'resolved',
-    owner: '田中 美咲',
+    performedAt: '2026-05-03 19:42',
+    type: 'feature_flag',
+    target: 'flag=new-checkout-v2',
+    summary: '新チェックアウトを 10% へ段階展開',
+    impact: 'high',
+    status: 'in_progress',
+    adminName: '田中 美咲',
   },
   {
-    id: 'INC-2837',
+    id: 'IV-2837',
     organizationId: 'o-aoyama',
-    occurredAt: '2026-05-03 17:20',
-    service: 'auth-gateway',
-    summary: 'リフレッシュトークンの検証エラーが 0.4% に上昇',
-    severity: 'P3',
-    status: 'resolved',
-    owner: '中村 翔',
+    performedAt: '2026-05-03 17:20',
+    type: 'message_sent',
+    target: 'segment=休眠顧客（90日）',
+    summary: '休眠顧客 18,260 名へリエンゲージメントメールを配信',
+    impact: 'low',
+    status: 'completed',
+    adminName: '鈴木 一郎',
   },
   // o-kitazawa
   {
-    id: 'INC-1184',
+    id: 'IV-1184',
     organizationId: 'o-kitazawa',
-    occurredAt: '2026-05-04 03:02',
-    service: 'order-api',
-    summary: '注文 API でタイムアウトが断続的に発生',
-    severity: 'P2',
-    status: 'investigating',
-    owner: '渡辺 健',
+    performedAt: '2026-05-04 10:02',
+    type: 'support_ticket',
+    target: 'ticket=SUP-1842',
+    summary: '在庫同期失敗の問い合わせを起点に、ログ調査と顧客返信を実施',
+    impact: 'medium',
+    status: 'in_progress',
+    adminName: '渡辺 健',
   },
   {
-    id: 'INC-1183',
+    id: 'IV-1183',
     organizationId: 'o-kitazawa',
-    occurredAt: '2026-05-03 20:15',
-    service: 'inventory-sync',
-    summary: '在庫同期ジョブが 1 回失敗 / 自動復旧',
-    severity: 'P3',
-    status: 'resolved',
-    owner: '伊藤 涼',
+    performedAt: '2026-05-03 20:15',
+    type: 'data_correction',
+    target: 'inventory=SKU-44182',
+    summary: '在庫 SKU-44182 の重複レコード 2 件を削除',
+    impact: 'low',
+    status: 'completed',
+    adminName: '伊藤 涼',
   },
   // o-hanazono
   {
-    id: 'INC-3102',
+    id: 'IV-3102',
     organizationId: 'o-hanazono',
-    occurredAt: '2026-05-04 01:48',
-    service: 'tracking-api',
-    summary: '配送ステータス更新の遅延が 8 分発生',
-    severity: 'P2',
-    status: 'mitigated',
-    owner: '田中 美咲',
+    performedAt: '2026-05-04 08:48',
+    type: 'feature_flag',
+    target: 'flag=route-optimizer-v3',
+    summary: 'ベータ顧客向けにルート最適化 v3 を全面公開',
+    impact: 'high',
+    status: 'completed',
+    adminName: '田中 美咲',
   },
   {
-    id: 'INC-3101',
+    id: 'IV-3101',
     organizationId: 'o-hanazono',
-    occurredAt: '2026-05-03 23:30',
-    service: 'route-optimizer',
-    summary: 'ルート最適化ジョブの実行時間が SLO を超過',
-    severity: 'P3',
-    status: 'open',
-    owner: '伊藤 涼',
+    performedAt: '2026-05-03 23:30',
+    type: 'impersonate',
+    target: 'driver_id=DRV-8842',
+    summary: 'ドライバーアプリ不具合の再現のため対象ドライバーで impersonate',
+    impact: 'low',
+    status: 'completed',
+    adminName: '伊藤 涼',
   },
   {
-    id: 'INC-3100',
+    id: 'IV-3100',
     organizationId: 'o-hanazono',
-    occurredAt: '2026-05-03 14:05',
-    service: 'driver-app',
-    summary: 'ドライバーアプリのプッシュ通知が 6 件失敗',
-    severity: 'P3',
-    status: 'resolved',
-    owner: '小林 結衣',
+    performedAt: '2026-05-03 14:05',
+    type: 'message_sent',
+    target: 'segment=優良顧客',
+    summary: '優良顧客 240 名へ NPS アンケートを配信',
+    impact: 'low',
+    status: 'completed',
+    adminName: '小林 結衣',
   },
-  // o-mishima (smaller)
-  {
-    id: 'INC-0042',
-    organizationId: 'o-mishima',
-    occurredAt: '2026-05-03 16:18',
-    service: 'print-queue',
-    summary: '印刷キュー監視で連続 2 件の警告',
-    severity: 'P3',
-    status: 'investigating',
-    owner: '小林 結衣',
-  },
-]
-
-export type JobStatus = 'success' | 'failed' | 'running' | 'queued'
-
-export type Job = {
-  id: string
-  organizationId: string
-  name: string
-  schedule: string
-  lastRunAt: string
-  duration: string
-  status: JobStatus
-  service: string
-}
-
-export const jobs: Job[] = [
-  // o-aoyama
-  { id: 'J-101', organizationId: 'o-aoyama', name: '日次 GMV 集計', schedule: '毎日 03:00 JST', lastRunAt: '2026-05-04 03:00', duration: '4m 12s', status: 'success', service: 'analytics-batch' },
-  { id: 'J-102', organizationId: 'o-aoyama', name: '在庫スナップショット', schedule: '毎時 00分', lastRunAt: '2026-05-04 09:00', duration: '38s', status: 'success', service: 'inventory-batch' },
-  { id: 'J-103', organizationId: 'o-aoyama', name: '検索インデックス再構築', schedule: '毎日 04:00 JST', lastRunAt: '2026-05-04 04:00', duration: '12m 04s', status: 'failed', service: 'search-indexer' },
-  { id: 'J-104', organizationId: 'o-aoyama', name: 'メール配信キュー', schedule: '5 分毎', lastRunAt: '2026-05-04 09:35', duration: '6s', status: 'running', service: 'notification-worker' },
-  { id: 'J-105', organizationId: 'o-aoyama', name: '請求バッチ', schedule: '月初 02:00 JST', lastRunAt: '2026-05-01 02:00', duration: '22m 18s', status: 'success', service: 'billing-job' },
-  { id: 'J-106', organizationId: 'o-aoyama', name: 'データウェアハウス連携', schedule: '毎日 05:00 JST', lastRunAt: '2026-05-04 05:00', duration: '8m 41s', status: 'success', service: 'etl' },
-  // o-kitazawa
-  { id: 'J-201', organizationId: 'o-kitazawa', name: '日次 GMV 集計', schedule: '毎日 03:00 JST', lastRunAt: '2026-05-04 03:00', duration: '1m 48s', status: 'success', service: 'analytics-batch' },
-  { id: 'J-202', organizationId: 'o-kitazawa', name: '在庫同期', schedule: '15 分毎', lastRunAt: '2026-05-04 09:30', duration: '12s', status: 'queued', service: 'inventory-sync' },
-  { id: 'J-203', organizationId: 'o-kitazawa', name: 'メール配信キュー', schedule: '5 分毎', lastRunAt: '2026-05-04 09:35', duration: '4s', status: 'success', service: 'notification-worker' },
-  // o-hanazono
-  { id: 'J-301', organizationId: 'o-hanazono', name: '配送ルート最適化', schedule: '毎日 04:30 JST', lastRunAt: '2026-05-04 04:30', duration: '18m 22s', status: 'success', service: 'route-optimizer' },
-  { id: 'J-302', organizationId: 'o-hanazono', name: '配送ステータス集計', schedule: '毎時 30分', lastRunAt: '2026-05-04 09:30', duration: '2m 06s', status: 'success', service: 'tracking-batch' },
-  { id: 'J-303', organizationId: 'o-hanazono', name: 'ドライバー実績集計', schedule: '毎日 06:00 JST', lastRunAt: '2026-05-04 06:00', duration: '3m 41s', status: 'success', service: 'driver-batch' },
-  { id: 'J-304', organizationId: 'o-hanazono', name: 'プッシュ通知配信', schedule: '5 分毎', lastRunAt: '2026-05-04 09:35', duration: '11s', status: 'running', service: 'notification-worker' },
   // o-mishima
-  { id: 'J-401', organizationId: 'o-mishima', name: '日次受注集計', schedule: '毎日 03:00 JST', lastRunAt: '2026-05-04 03:00', duration: '14s', status: 'success', service: 'analytics-batch' },
-  { id: 'J-402', organizationId: 'o-mishima', name: '印刷キュー監視', schedule: '10 分毎', lastRunAt: '2026-05-04 09:30', duration: '3s', status: 'success', service: 'print-monitor' },
+  {
+    id: 'IV-0042',
+    organizationId: 'o-mishima',
+    performedAt: '2026-05-03 16:18',
+    type: 'support_ticket',
+    target: 'ticket=SUP-0014',
+    summary: '印刷ジョブ詰まりの問い合わせに対応中。ジョブキュー再起動を依頼',
+    impact: 'medium',
+    status: 'in_progress',
+    adminName: '小林 結衣',
+  },
 ]
 
 export type AuditLog = {
@@ -695,21 +694,21 @@ export const auditLog: AuditLog[] = [
   { id: 'A-2001', organizationId: 'o-aoyama', actorId: 'u-yamada', action: 'metrics.update', target: '指標「GMV」のしきい値変更', at: '2026-05-04 09:42', ip: '10.0.12.34' },
   { id: 'A-2000', organizationId: 'o-aoyama', actorId: 'u-sato', action: 'members.invite', target: 'invite@example.com を viewer で招待', at: '2026-05-04 08:15', ip: '10.0.18.7' },
   { id: 'A-1999', organizationId: 'o-aoyama', actorId: 'u-suzuki', action: 'segments.create', target: 'セグメント「リピーター」を作成', at: '2026-05-04 07:48', ip: '10.0.12.99' },
-  { id: 'A-1998', organizationId: 'o-aoyama', actorId: 'u-yamada', action: 'incidents.assign', target: 'INC-2841 を中村 翔 に割当', at: '2026-05-04 02:18', ip: '10.0.12.34' },
+  { id: 'A-1998', organizationId: 'o-aoyama', actorId: 'u-yamada', action: 'interventions.create', target: 'IV-2841（impersonate）を承認・実施', at: '2026-05-04 02:18', ip: '10.0.12.34' },
   { id: 'A-1997', organizationId: 'o-aoyama', actorId: 'u-tanaka', action: 'auth.login', target: 'SSO ログイン成功', at: '2026-05-04 01:50', ip: '10.0.20.41' },
   { id: 'A-1996', organizationId: 'o-aoyama', actorId: 'u-sato', action: 'settings.update', target: '通知ルール「高重要度のみ」を有効化', at: '2026-05-03 23:12', ip: '10.0.18.7' },
   { id: 'A-1995', organizationId: 'o-aoyama', actorId: 'u-nakamura', action: 'audit.export', target: '監査ログ 2026-04 を CSV エクスポート', at: '2026-05-03 22:30', ip: '10.0.16.88' },
   // o-kitazawa
   { id: 'A-3050', organizationId: 'o-kitazawa', actorId: 'u-watanabe', action: 'members.role_change', target: 'u-ito の権限を editor に変更', at: '2026-05-04 09:30', ip: '10.0.32.4' },
   { id: 'A-3049', organizationId: 'o-kitazawa', actorId: 'u-yamada', action: 'metrics.create', target: '指標「在庫回転率」を新規作成', at: '2026-05-04 09:10', ip: '10.0.12.34' },
-  { id: 'A-3048', organizationId: 'o-kitazawa', actorId: 'u-ito', action: 'incidents.resolve', target: 'INC-1183 を解決済みにマーク', at: '2026-05-03 20:22', ip: '10.0.32.91' },
+  { id: 'A-3048', organizationId: 'o-kitazawa', actorId: 'u-ito', action: 'interventions.complete', target: 'IV-1183（データ修正）を完了済みにマーク', at: '2026-05-03 20:22', ip: '10.0.32.91' },
   // o-hanazono
   { id: 'A-4022', organizationId: 'o-hanazono', actorId: 'u-tanaka', action: 'settings.update', target: '配送ルート最適化の SLO を 20 分に変更', at: '2026-05-04 09:05', ip: '10.0.40.12' },
-  { id: 'A-4021', organizationId: 'o-hanazono', actorId: 'u-ito', action: 'jobs.retry', target: 'route-optimizer の再実行', at: '2026-05-04 04:50', ip: '10.0.40.7' },
+  { id: 'A-4021', organizationId: 'o-hanazono', actorId: 'u-ito', action: 'feature_flag.toggle', target: 'route-optimizer-v3 をベータ顧客に展開', at: '2026-05-04 04:50', ip: '10.0.40.7' },
   { id: 'A-4020', organizationId: 'o-hanazono', actorId: 'u-kobayashi', action: 'segments.update', target: 'セグメント「優良顧客」を更新', at: '2026-05-03 18:42', ip: '10.0.40.55' },
   // o-mishima
   { id: 'A-5010', organizationId: 'o-mishima', actorId: 'u-kobayashi', action: 'auth.login', target: 'パスワードログイン成功', at: '2026-05-04 09:00', ip: '10.0.50.2' },
-  { id: 'A-5009', organizationId: 'o-mishima', actorId: 'u-kobayashi', action: 'incidents.create', target: 'INC-0042 を作成', at: '2026-05-03 16:18', ip: '10.0.50.2' },
+  { id: 'A-5009', organizationId: 'o-mishima', actorId: 'u-kobayashi', action: 'interventions.create', target: 'IV-0042（サポート対応）を起票', at: '2026-05-03 16:18', ip: '10.0.50.2' },
 ]
 
 // =====================================================
@@ -723,27 +722,26 @@ export type Segment = {
   description: string
   userCount: number
   filterCount: number
-  ownerId: string
   updatedAt: string
 }
 
 export const segments: Segment[] = [
   // o-aoyama
-  { id: 'S-A001', organizationId: 'o-aoyama', name: 'リピーター（月次）', description: '直近30日に2回以上購入した顧客', userCount: 12420, filterCount: 3, ownerId: 'u-suzuki', updatedAt: '2026-05-04 07:48' },
-  { id: 'S-A002', organizationId: 'o-aoyama', name: 'プレミアム会員', description: '年間利用額が 50万円以上', userCount: 845, filterCount: 2, ownerId: 'u-sato', updatedAt: '2026-04-28 12:30' },
-  { id: 'S-A003', organizationId: 'o-aoyama', name: '休眠顧客（90日）', description: '90日以上アクティビティなし', userCount: 18260, filterCount: 4, ownerId: 'u-yamada', updatedAt: '2026-04-15 09:20' },
-  { id: 'S-A004', organizationId: 'o-aoyama', name: '新規（直近7日）', description: '初回購入から7日以内', userCount: 1240, filterCount: 2, ownerId: 'u-tanaka', updatedAt: '2026-05-03 14:00' },
-  { id: 'S-A005', organizationId: 'o-aoyama', name: '高エラー率セッション', description: '5xxを2回以上経験したセッション保有', userCount: 312, filterCount: 5, ownerId: 'u-nakamura', updatedAt: '2026-05-04 02:30' },
+  { id: 'S-A001', organizationId: 'o-aoyama', name: 'リピーター（月次）', description: '直近30日に2回以上購入した顧客', userCount: 12420, filterCount: 3, updatedAt: '2026-05-04 07:48' },
+  { id: 'S-A002', organizationId: 'o-aoyama', name: 'プレミアム会員', description: '年間利用額が 50万円以上', userCount: 845, filterCount: 2, updatedAt: '2026-04-28 12:30' },
+  { id: 'S-A003', organizationId: 'o-aoyama', name: '休眠顧客（90日）', description: '90日以上アクティビティなし', userCount: 18260, filterCount: 4, updatedAt: '2026-04-15 09:20' },
+  { id: 'S-A004', organizationId: 'o-aoyama', name: '新規（直近7日）', description: '初回購入から7日以内', userCount: 1240, filterCount: 2, updatedAt: '2026-05-03 14:00' },
+  { id: 'S-A005', organizationId: 'o-aoyama', name: '高エラー率セッション', description: '5xxを2回以上経験したセッション保有', userCount: 312, filterCount: 5, updatedAt: '2026-05-04 02:30' },
   // o-kitazawa
-  { id: 'S-K001', organizationId: 'o-kitazawa', name: 'まとめ買い顧客', description: '1注文 1万円以上の顧客', userCount: 1840, filterCount: 2, ownerId: 'u-watanabe', updatedAt: '2026-05-02 11:00' },
-  { id: 'S-K002', organizationId: 'o-kitazawa', name: '関西エリア', description: '配送先が大阪・京都・兵庫', userCount: 24100, filterCount: 3, ownerId: 'u-ito', updatedAt: '2026-04-28 18:45' },
-  { id: 'S-K003', organizationId: 'o-kitazawa', name: '法人顧客', description: '法人アカウント所有', userCount: 320, filterCount: 1, ownerId: 'u-sato', updatedAt: '2026-04-20 10:20' },
+  { id: 'S-K001', organizationId: 'o-kitazawa', name: 'まとめ買い顧客', description: '1注文 1万円以上の顧客', userCount: 1840, filterCount: 2, updatedAt: '2026-05-02 11:00' },
+  { id: 'S-K002', organizationId: 'o-kitazawa', name: '関西エリア', description: '配送先が大阪・京都・兵庫', userCount: 24100, filterCount: 3, updatedAt: '2026-04-28 18:45' },
+  { id: 'S-K003', organizationId: 'o-kitazawa', name: '法人顧客', description: '法人アカウント所有', userCount: 320, filterCount: 1, updatedAt: '2026-04-20 10:20' },
   // o-hanazono
-  { id: 'S-H001', organizationId: 'o-hanazono', name: '当日配送圏内', description: '営業所から30km圏内', userCount: 48200, filterCount: 4, ownerId: 'u-tanaka', updatedAt: '2026-05-03 09:30' },
-  { id: 'S-H002', organizationId: 'o-hanazono', name: '冷凍商品取扱', description: '冷凍輸送オプション利用顧客', userCount: 6450, filterCount: 2, ownerId: 'u-ito', updatedAt: '2026-04-25 13:15' },
-  { id: 'S-H003', organizationId: 'o-hanazono', name: '優良顧客', description: '月間配送件数 100件以上', userCount: 240, filterCount: 3, ownerId: 'u-kobayashi', updatedAt: '2026-05-03 18:42' },
+  { id: 'S-H001', organizationId: 'o-hanazono', name: '当日配送圏内', description: '営業所から30km圏内', userCount: 48200, filterCount: 4, updatedAt: '2026-05-03 09:30' },
+  { id: 'S-H002', organizationId: 'o-hanazono', name: '冷凍商品取扱', description: '冷凍輸送オプション利用顧客', userCount: 6450, filterCount: 2, updatedAt: '2026-04-25 13:15' },
+  { id: 'S-H003', organizationId: 'o-hanazono', name: '優良顧客', description: '月間配送件数 100件以上', userCount: 240, filterCount: 3, updatedAt: '2026-05-03 18:42' },
   // o-mishima
-  { id: 'S-M001', organizationId: 'o-mishima', name: '定期発注顧客', description: '月次の定期発注契約', userCount: 84, filterCount: 1, ownerId: 'u-kobayashi', updatedAt: '2026-04-30 11:00' },
+  { id: 'S-M001', organizationId: 'o-mishima', name: '定期発注顧客', description: '月次の定期発注契約', userCount: 84, filterCount: 1, updatedAt: '2026-04-30 11:00' },
 ]
 
 // =====================================================

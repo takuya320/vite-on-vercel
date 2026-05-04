@@ -14,9 +14,9 @@ const G = (path: string) => (
   </svg>
 )
 
-const PRIMARY: NavItem[] = [
+const USAGE: NavItem[] = [
   { to: '/', label: '概要', icon: G('M2 9l6-5 6 5v5H2V9zM7 14V11h2v3') },
-  { to: '/metrics', label: '指標', icon: G('M2 13V3M2 13h11M5 10V7M8 10V5M11 10V8') },
+  { to: '/metrics', label: '利用指標', icon: G('M2 13V3M2 13h11M5 10V7M8 10V5M11 10V8') },
   {
     to: '/organizations',
     label: '組織別',
@@ -26,18 +26,17 @@ const PRIMARY: NavItem[] = [
   { to: '/segments', label: 'セグメント', icon: G('M8 1v14M1 8h14M3 3l10 10M13 3L3 13') },
 ]
 
-const OPS: NavItem[] = [
+const INTERVENTION: NavItem[] = [
   {
-    to: '/incidents',
-    label: 'インシデント',
+    to: '/interventions',
+    label: '介入履歴',
     badge: '3',
-    icon: G('M8 1v6M8 11v.01M8 14a6 6 0 1 1 0-12 6 6 0 0 1 0 12z'),
+    icon: G('M3 8l3-3 4 4 3-3M3 13h10'),
   },
-  { to: '/jobs', label: 'バックグラウンド', icon: G('M3 8a5 5 0 0 1 9-3M13 8a5 5 0 0 1-9 3M12 2v3h-3M4 14v-3h3') },
   { to: '/audit', label: '監査ログ', icon: G('M3 2h7l3 3v9H3V2zM10 2v3h3') },
 ]
 
-const SETTINGS: NavItem[] = [
+const MANAGEMENT: NavItem[] = [
   {
     to: '/members',
     label: 'メンバー',
@@ -94,16 +93,16 @@ export default function Sidebar() {
         <div className="dash-side__brand-name">Meridian Ops</div>
       </div>
       <nav className="dash-side__nav">
-        <Section title="概要" items={PRIMARY} pathname={pathname} />
-        <Section title="運用" items={OPS} pathname={pathname} />
-        <Section title="組織" items={SETTINGS} pathname={pathname} />
+        <Section title="利用実態" items={USAGE} pathname={pathname} />
+        <Section title="介入" items={INTERVENTION} pathname={pathname} />
+        <Section title="管理" items={MANAGEMENT} pathname={pathname} />
       </nav>
       <button
         type="button"
         className="dash-side__foot"
         onClick={() =>
           toast({
-            title: 'ステータスページ',
+            title: 'サービスステータス',
             description: '全システム正常稼働中（モック）',
             status: 'success',
             duration: 1500,

@@ -7,7 +7,7 @@ import PageHeader from '../components/PageHeader'
 import RankingList from '../components/RankingList'
 import { EmptyState } from '../components/States'
 import Toolbar, { PresetId, Range } from '../components/Toolbar'
-import { chartSeriesByOrg, incidents, kpisByOrg, rankingByOrg, type Kpi } from '../data'
+import { chartSeriesByOrg, interventions, kpisByOrg, rankingByOrg, type Kpi } from '../data'
 import { useOrg } from '../orgContext'
 
 function pad2(n: number): string {
@@ -42,8 +42,8 @@ export default function OverviewPage() {
   const kpis = kpisByOrg[activeOrg.id] ?? []
   const chartData = chartSeriesByOrg[activeOrg.id] ?? []
   const ranking = rankingByOrg[activeOrg.id] ?? []
-  const orgIncidents = useMemo(
-    () => incidents.filter((i) => i.organizationId === activeOrg.id).slice(0, 5),
+  const orgInterventions = useMemo(
+    () => interventions.filter((i) => i.organizationId === activeOrg.id).slice(0, 5),
     [activeOrg.id],
   )
 
@@ -80,7 +80,7 @@ export default function OverviewPage() {
       <PageHeader
         eyebrow={`業務概要 / ${activeOrg.name}`}
         title="業務ダッシュボード"
-        subtitle="売上・運用状況・インシデントを一画面で把握できます。各指標から詳細ページへ遷移できます。"
+        subtitle="サービス利用実態・エンゲージメント・Adminによる介入状況を一画面で把握できます。"
         lastUpdatedAt={lastUpdatedStr}
       />
       <Toolbar
@@ -116,7 +116,6 @@ export default function OverviewPage() {
           <KpiCard
             key={kpi.id}
             kpi={kpi}
-            invert={kpi.id === 'errors'}
             index={i}
             loading={isRefreshing}
             onClick={() => openKpi(kpi)}
@@ -129,18 +128,18 @@ export default function OverviewPage() {
         <RankingList items={ranking} />
       </section>
 
-      <DataTable data={orgIncidents} />
+      <DataTable data={orgInterventions} />
 
-      <section className="dash-card dash-reveal" data-i={6} aria-label="アラート">
+      <section className="dash-card dash-reveal" data-i={6} aria-label="エンゲージメント低下">
         <div className="dash-card__head">
           <div>
-            <h3 className="dash-card__title">しきい値アラート</h3>
-            <div className="dash-card__sub">直近6時間</div>
+            <h3 className="dash-card__title">エンゲージメント低下顧客</h3>
+            <div className="dash-card__sub">直近 14 日でアクティビティが急減した顧客</div>
           </div>
         </div>
         <EmptyState
-          title="アラートはありません"
-          description="設定済みの全しきい値が正常範囲内で推移中です。SLO・コスト・レイテンシのいずれも許容範囲内です。"
+          title="該当する顧客はいません"
+          description="現時点で大きなエンゲージメント低下は検知されていません。スティッキネス・ログイン頻度・主要機能利用率いずれも許容範囲内で推移中です。"
         />
       </section>
     </>

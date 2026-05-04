@@ -8,17 +8,22 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { useState } from 'react'
-import type { Incident } from '../data'
+import {
+  INTERVENTION_TYPE_LABEL,
+  type Intervention,
+  type InterventionImpact,
+  type InterventionStatus,
+} from '../data'
 import StatusBadge from './StatusBadge'
 
 type Props = {
-  data: Incident[]
+  data: Intervention[]
 }
 
-const columns: ColumnDef<Incident>[] = [
+const columns: ColumnDef<Intervention>[] = [
   {
-    accessorKey: 'occurredAt',
-    header: '発生時刻',
+    accessorKey: 'performedAt',
+    header: '実施時刻',
     cell: ({ getValue }) => <span className="dash-table__time">{String(getValue() ?? '')}</span>,
   },
   {
@@ -28,13 +33,21 @@ const columns: ColumnDef<Incident>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: 'severity',
-    header: '重要度',
-    cell: ({ getValue }) => <StatusBadge kind="severity" value={getValue() as 'P1' | 'P2' | 'P3'} />,
+    accessorKey: 'impact',
+    header: '影響度',
+    cell: ({ getValue }) => <StatusBadge kind="impact" value={getValue() as InterventionImpact} />,
   },
   {
-    accessorKey: 'service',
-    header: 'サービス',
+    accessorKey: 'type',
+    header: '種別',
+    cell: ({ getValue }) => (
+      <span className="dash-meta-pill">{INTERVENTION_TYPE_LABEL[getValue() as Intervention['type']]}</span>
+    ),
+    enableSorting: false,
+  },
+  {
+    accessorKey: 'target',
+    header: '対象',
     cell: ({ getValue }) => <span className="dash-table__service">{String(getValue() ?? '')}</span>,
     enableSorting: false,
   },
@@ -47,11 +60,11 @@ const columns: ColumnDef<Incident>[] = [
   {
     accessorKey: 'status',
     header: 'ステータス',
-    cell: ({ getValue }) => <StatusBadge kind="status" value={getValue() as Incident['status']} />,
+    cell: ({ getValue }) => <StatusBadge kind="status" value={getValue() as InterventionStatus} />,
   },
   {
-    accessorKey: 'owner',
-    header: '担当',
+    accessorKey: 'adminName',
+    header: '実施者',
     cell: ({ getValue }) => <span className="dash-table__owner">{String(getValue() ?? '')}</span>,
     enableSorting: false,
   },
@@ -60,7 +73,7 @@ const columns: ColumnDef<Incident>[] = [
 export default function DataTable({ data }: Props) {
   const toast = useToast()
   const [sorting, setSorting] = useState<SortingState>([])
-  const table = useReactTable<Incident>({
+  const table = useReactTable<Intervention>({
     data,
     columns,
     state: { sorting },
@@ -69,10 +82,10 @@ export default function DataTable({ data }: Props) {
     getSortedRowModel: getSortedRowModel(),
   })
 
-  function openIncident(inc: Incident) {
+  function openIntervention(iv: Intervention) {
     toast({
-      title: `${inc.id} の詳細を開きます`,
-      description: `${inc.service} · ${inc.severity} · ${inc.summary}`,
+      title: `${iv.id} の詳細を開きます`,
+      description: `${INTERVENTION_TYPE_LABEL[iv.type]} · ${iv.summary}`,
       status: 'info',
       duration: 2200,
       position: 'top-right',
@@ -83,8 +96,8 @@ export default function DataTable({ data }: Props) {
     <div className="dash-card dash-tablecard dash-reveal" data-i={5}>
       <div className="dash-card__head">
         <div>
-          <h3 className="dash-card__title">未対応インシデント</h3>
-          <div className="dash-card__sub">過去24時間</div>
+          <h3 className="dash-card__title">最近の介入</h3>
+          <div className="dash-card__sub">過去24時間 / Adminによるサービス操作</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button
@@ -93,7 +106,7 @@ export default function DataTable({ data }: Props) {
             onClick={() =>
               toast({
                 title: 'フィルタはモックです',
-                description: '本実装では severity / status / service による絞り込みを提供します。',
+                description: '本実装では impact / type / status による絞り込みを提供します。',
                 status: 'info',
                 duration: 1800,
                 position: 'top-right',
@@ -107,7 +120,7 @@ export default function DataTable({ data }: Props) {
             type="button"
             onClick={() =>
               toast({
-                title: 'インシデント一覧へ遷移（モック）',
+                title: '介入履歴一覧へ遷移（モック）',
                 status: 'info',
                 duration: 1500,
                 position: 'top-right',
@@ -147,9 +160,9 @@ export default function DataTable({ data }: Props) {
               <tr
                 key={row.id}
                 tabIndex={0}
-                onClick={() => openIncident(row.original)}
+                onClick={() => openIntervention(row.original)}
                 onKeyDown={(e) =>
-                  (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openIncident(row.original))
+                  (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openIntervention(row.original))
                 }
               >
                 {row.getVisibleCells().map((cell) => (
