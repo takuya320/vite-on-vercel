@@ -26,7 +26,7 @@ export default function SettingsPage() {
         title="組織設定"
         subtitle={
           canManage
-            ? 'この組織の基本情報・通知・連携サービスの設定。設定は組織ごとに独立しています。'
+            ? 'この組織の基本情報・ダッシュボード初期値の設定。設定は組織ごとに独立しています。'
             : `この組織での権限は「${ROLE_LABEL[myMembership?.role ?? 'viewer']}」のため、設定は閲覧のみ可能です。`
         }
       />
@@ -85,116 +85,35 @@ export default function SettingsPage() {
 
         <div className="dash-settings-grid">
           <div className="dash-settings-grid__heading">
-            <h3>通知</h3>
-            <p>しきい値超過・重大インシデント発生時の通知ルール。</p>
+            <h3>ダッシュボード初期値</h3>
+            <p>この組織を開いたときの既定の表示条件。メンバー全員に適用されます。</p>
           </div>
           <div>
             <div className="dash-settings-row">
               <div>
-                <div className="dash-settings-row__label">P1 インシデント通知</div>
-                <div className="dash-settings-row__hint">Slack #ops-alert / 即時</div>
+                <div className="dash-settings-row__label">既定の期間</div>
+                <div className="dash-settings-row__hint">概要・指標ページで適用</div>
               </div>
-              <div className="dash-settings-row__value">
-                <span className="dash-meta-pill dash-meta-pill--positive">有効</span>
-              </div>
+              <div className="dash-settings-row__value">過去 30 日</div>
             </div>
             <div className="dash-settings-row">
               <div>
-                <div className="dash-settings-row__label">SLO 違反通知</div>
-                <div className="dash-settings-row__hint">PagerDuty / 5 分超で発火</div>
+                <div className="dash-settings-row__label">既定のプラン絞込</div>
               </div>
-              <div className="dash-settings-row__value">
-                <span className="dash-meta-pill dash-meta-pill--positive">有効</span>
-              </div>
+              <div className="dash-settings-row__value">全プラン</div>
             </div>
             <div className="dash-settings-row">
               <div>
-                <div className="dash-settings-row__label">日次サマリ</div>
-                <div className="dash-settings-row__hint">毎朝 09:00 JST</div>
+                <div className="dash-settings-row__label">監査ログ保持期間</div>
+                <div className="dash-settings-row__hint">超過分は自動削除</div>
               </div>
-              <div className="dash-settings-row__value">
-                <span className="dash-meta-pill">無効</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="dash-settings-grid">
-          <div className="dash-settings-grid__heading">
-            <h3>連携サービス</h3>
-            <p>外部サービスとの連携状態。組織単位で個別に設定できます。</p>
-          </div>
-          <div>
-            <div className="dash-settings-row">
-              <div>
-                <div className="dash-settings-row__label">Slack</div>
-                <div className="dash-settings-row__hint">通知・コマンド連携</div>
-              </div>
-              <div className="dash-settings-row__value">
-                <span className="dash-meta-pill dash-meta-pill--positive">接続済</span>
-              </div>
-            </div>
-            <div className="dash-settings-row">
-              <div>
-                <div className="dash-settings-row__label">PagerDuty</div>
-                <div className="dash-settings-row__hint">オンコール</div>
-              </div>
-              <div className="dash-settings-row__value">
-                <span className="dash-meta-pill dash-meta-pill--positive">接続済</span>
-              </div>
-            </div>
-            <div className="dash-settings-row">
-              <div>
-                <div className="dash-settings-row__label">Datadog</div>
-                <div className="dash-settings-row__hint">メトリクス送信</div>
-              </div>
-              <div className="dash-settings-row__value">
-                <span className="dash-meta-pill">未接続</span>
-              </div>
-            </div>
-            <div className="dash-settings-row">
-              <div>
-                <div className="dash-settings-row__label">Linear</div>
-                <div className="dash-settings-row__hint">インシデント連動</div>
-              </div>
-              <div className="dash-settings-row__value">
-                <span className="dash-meta-pill">未接続</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="dash-settings-grid">
-          <div className="dash-settings-grid__heading">
-            <h3>請求</h3>
-            <p>プラン情報と次回請求予定。請求は組織単位で発行されます。</p>
-          </div>
-          <div>
-            <div className="dash-settings-row">
-              <div>
-                <div className="dash-settings-row__label">現在のプラン</div>
-              </div>
-              <div className="dash-settings-row__value">
-                <span className="dash-meta-pill dash-meta-pill--accent">{activeOrg.plan}</span>
-              </div>
-            </div>
-            <div className="dash-settings-row">
-              <div>
-                <div className="dash-settings-row__label">次回請求予定</div>
-              </div>
-              <div className="dash-settings-row__value">2026-06-01</div>
-            </div>
-            <div className="dash-settings-row">
-              <div>
-                <div className="dash-settings-row__label">支払い方法</div>
-              </div>
-              <div className="dash-settings-row__value">VISA •••• 4242</div>
+              <div className="dash-settings-row__value">365 日</div>
             </div>
             <div className="dash-settings-row">
               <div></div>
               <div>
                 <button className="dash-btn" type="button" onClick={notImpl}>
-                  請求情報を編集
+                  既定値を編集
                 </button>
               </div>
             </div>
