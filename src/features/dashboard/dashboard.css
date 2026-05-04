@@ -3,8 +3,9 @@
    Cream paper × Fraunces serif × JetBrains Mono
    ========================================================= */
 
-.dash-root {
-  /* ---- Color ---- */
+:root {
+  /* Tokens are declared on :root so they resolve inside Portal'd content
+     (Chakra Modal/Tooltip render to document.body). */
   --dash-bg: #f3ede0;
   --dash-bg-2: #ece4d3;
   --dash-surface: #fbf7ee;
@@ -28,14 +29,14 @@
   --dash-warn-soft: #f0dfba;
   --dash-amber: #d99a1f;
 
-  /* ---- Type ---- */
   --dash-font-body: 'Plus Jakarta Sans', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif;
   --dash-font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
 
-  /* ---- Misc ---- */
   --dash-shadow-1: 0 1px 0 rgba(24, 20, 16, 0.04), 0 1px 3px rgba(24, 20, 16, 0.06);
   --dash-shadow-2: 0 1px 0 rgba(24, 20, 16, 0.06), 0 6px 20px -6px rgba(24, 20, 16, 0.12);
+}
 
+.dash-root {
   font-family: var(--dash-font-body);
   color: var(--dash-ink);
   background: var(--dash-bg);
@@ -1866,6 +1867,106 @@ body.dash-active #root {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+}
+
+/* ===== Form (used in modals) ===== */
+.dash-form-label {
+  display: block;
+  font-family: var(--dash-font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dash-ink-3);
+  margin-bottom: 6px;
+}
+.dash-form-hint {
+  font-family: var(--dash-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dash-ink-3);
+}
+.dash-form-input,
+.dash-form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--dash-rule);
+  border-radius: 6px;
+  background: var(--dash-bg);
+  color: var(--dash-ink);
+  font: inherit;
+  font-size: 13.5px;
+  outline: none;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+.dash-form-input::placeholder,
+.dash-form-textarea::placeholder {
+  color: var(--dash-ink-3);
+}
+.dash-form-input:focus,
+.dash-form-textarea:focus {
+  border-color: var(--dash-ink);
+  box-shadow: 0 0 0 3px rgba(24, 20, 16, 0.06);
+}
+.dash-form-textarea {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.5;
+}
+
+.dash-rule-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dash-rule-conn {
+  width: 36px;
+  flex-shrink: 0;
+  font-family: var(--dash-font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--dash-ink-3);
+  text-align: center;
+}
+
+.dash-form-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: var(--dash-bg-2);
+  border: 1px solid var(--dash-rule);
+  border-radius: 8px;
+}
+.dash-form-preview__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dash-ink);
+}
+.dash-form-preview__sub {
+  font-family: var(--dash-font-mono);
+  font-size: 10.5px;
+  color: var(--dash-ink-3);
+  margin-top: 2px;
+}
+.dash-form-preview__count {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  color: var(--dash-ink);
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+.dash-form-preview__unit {
+  font-family: var(--dash-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--dash-ink-3);
+  margin-left: 4px;
 }
 
 /* ===== Interactive helpers ===== */

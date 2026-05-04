@@ -1,12 +1,14 @@
-import { useToast } from '@chakra-ui/react'
+import { useDisclosure, useToast } from '@chakra-ui/react'
 import { useMemo } from 'react'
 import PageHeader from '../components/PageHeader'
+import SegmentCreateDialog from '../components/SegmentCreateDialog'
 import { segments } from '../data'
 import { useOrg } from '../orgContext'
 
 export default function SegmentsPage() {
   const toast = useToast()
   const { activeOrg } = useOrg()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const orgSegments = useMemo(() => segments.filter((s) => s.organizationId === activeOrg.id), [activeOrg.id])
   const totalUsers = orgSegments.reduce((sum, s) => sum + s.userCount, 0)
@@ -27,18 +29,7 @@ export default function SegmentsPage() {
         title="顧客セグメント"
         subtitle="この組織内の分析・マーケティング向けセグメント。セグメントは組織ごとに独立し、他組織から参照できません。"
         rightSlot={
-          <button
-            type="button"
-            className="dash-btn dash-btn--primary"
-            onClick={() =>
-              toast({
-                title: 'セグメント作成（モック）',
-                status: 'info',
-                duration: 1500,
-                position: 'top-right',
-              })
-            }
-          >
+          <button type="button" className="dash-btn dash-btn--primary" onClick={onOpen}>
             + 新規セグメント
           </button>
         }
@@ -112,6 +103,8 @@ export default function SegmentsPage() {
           </table>
         </div>
       </div>
+
+      <SegmentCreateDialog isOpen={isOpen} onClose={onClose} />
     </>
   )
 }
