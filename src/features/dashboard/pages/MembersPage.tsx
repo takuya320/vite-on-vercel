@@ -1,5 +1,6 @@
-import { useToast } from '@chakra-ui/react'
+import { useDisclosure, useToast } from '@chakra-ui/react'
 import { useMemo } from 'react'
+import MemberInviteDialog from '../components/MemberInviteDialog'
 import PageHeader from '../components/PageHeader'
 import { currentUserId, getMembersOfOrg, PERMISSION_LABEL, ROLE_LABEL, type Membership, type User } from '../data'
 import { useOrg } from '../orgContext'
@@ -14,6 +15,7 @@ const ROLE_PILL_CLS: Record<Membership['role'], string> = {
 export default function MembersPage() {
   const toast = useToast()
   const { activeOrg } = useOrg()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const members = useMemo(() => getMembersOfOrg(activeOrg.id), [activeOrg.id])
   const counts = useMemo(() => {
@@ -39,19 +41,7 @@ export default function MembersPage() {
         title="メンバーと権限"
         subtitle="この組織のメンバーと、各メンバーに付与されたロール・権限。ユーザーは複数組織に所属できますが、権限は組織ごとに独立しています。"
         rightSlot={
-          <button
-            type="button"
-            className="dash-btn dash-btn--primary"
-            onClick={() =>
-              toast({
-                title: 'メンバー招待（モック）',
-                description: `${activeOrg.name} へ招待リンクを発行します`,
-                status: 'info',
-                duration: 1600,
-                position: 'top-right',
-              })
-            }
-          >
+          <button type="button" className="dash-btn dash-btn--primary" onClick={onOpen}>
             + メンバー招待
           </button>
         }
@@ -163,6 +153,8 @@ export default function MembersPage() {
           </table>
         </div>
       </div>
+
+      <MemberInviteDialog isOpen={isOpen} onClose={onClose} />
     </>
   )
 }
