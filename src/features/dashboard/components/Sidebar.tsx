@@ -89,8 +89,8 @@ export default function Sidebar() {
   return (
     <aside className="dash-side" aria-label="主要ナビゲーション">
       <div className="dash-side__brand">
-        <div className="dash-side__brand-mark">M</div>
-        <div className="dash-side__brand-name">Meridian Ops</div>
+        <div className="dash-side__brand-mark">業</div>
+        <div className="dash-side__brand-name">業務ダッシュボード</div>
       </div>
       <nav className="dash-side__nav">
         <Section title="利用実態" items={USAGE} pathname={pathname} />
