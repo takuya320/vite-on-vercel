@@ -55,14 +55,11 @@ pnpm dev
 
 ## Routes
 
-| Path              | コンポーネント                            |
-| ----------------- | ----------------------------------------- |
-| `/`               | `src/features/dashboard/Dashboard.tsx`    |
-| `/component-test` | `src/features/component-test/...`         |
-| `/table-test`     | `src/features/table-test/...`             |
-| `/button-test`    | `src/features/button-test/...`            |
+| Path | コンポーネント                         |
+| ---- | -------------------------------------- |
+| `/`  | `src/features/dashboard/Dashboard.tsx` |
 
-ルーティング定義は `src/router.tsx` にあります。トップページは業務ダッシュボード。`/component-test` 等は UI コンポーネントの動作確認用。
+ルーティング定義は `src/router.tsx` にあります。現状のページは業務ダッシュボードのみ。
 
 ## Project Structure
 
@@ -71,19 +68,11 @@ src/
 ├─ main.tsx             # エントリポイント (RouterProvider + Analytics)
 ├─ router.tsx           # React Router 定義
 ├─ features/            # 機能単位のページ
-│  ├─ dashboard/
-│  │  ├─ Dashboard.tsx        # ルートコンポーネント (PascalCase = 機能名)
-│  │  ├─ dashboard.css        # Dashboard 局所スコープのスタイル
-│  │  ├─ data.ts              # ダミーデータ
-│  │  └─ components/          # 機能内で閉じる UI 部品
-│  ├─ button-test/
-│  │  ├─ ButtonTest.tsx
-│  │  └─ components/
-│  ├─ component-test/
-│  │  ├─ ComponentTest.tsx
-│  │  └─ components/
-│  └─ table-test/
-│     └─ TableTest.tsx
+│  └─ dashboard/
+│     ├─ Dashboard.tsx        # ルートコンポーネント (PascalCase = 機能名)
+│     ├─ dashboard.css        # Dashboard 局所スコープのスタイル
+│     ├─ data.ts              # ダミーデータ
+│     └─ components/          # 機能内で閉じる UI 部品
 └─ test/                # Vitest 用ユーティリティ
 ```
 
@@ -92,7 +81,7 @@ src/
 ディレクトリ・命名規約は以下のとおりです。新規機能を追加するときも揃えてください。
 
 - **`src/features/<kebab-case>/`** ─ 1 機能 1 ディレクトリ。機能間の依存は禁止し、共通化は `src/` 直下のレイヤ (将来的に `components/` `lib/` など) へ引き上げる
-- **エントリは `<PascalCase>.tsx`** ─ ディレクトリ名と対応する 1 ファイル (例: `button-test/ButtonTest.tsx`) が `router.tsx` の `element` で参照される唯一の公開点
+- **エントリは `<PascalCase>.tsx`** ─ ディレクトリ名と対応する 1 ファイル (例: `dashboard/Dashboard.tsx`) が `router.tsx` の `element` で参照される唯一の公開点
 - **`components/` (複数形) を使用** ─ 機能内で閉じる UI 部品の置き場所。`component/` (単数) は使わない
 - **テストは併置** ─ 対象ファイルの隣に `*.test.tsx` を置く方針 (現状は `src/test/` にサンプル 1 件のみ)
 
@@ -110,7 +99,7 @@ src/
 ```
 
 - **`framework: "vite"`**: Vercel のビルドコマンド・出力ディレクトリ (`dist/`) を Vite プリセットに揃える
-- **`rewrites`**: クライアントサイドルーティング (`/component-test` など) を直リンクで開いたときに 404 にならないよう、`/assets/*` 以外を `index.html` にフォールバック
+- **`rewrites`**: 将来クライアントサイドルーティングのサブパスが増えた際にも直リンクで 404 にならないよう、`/assets/*` 以外を `index.html` にフォールバック
 
 ### Analytics
 

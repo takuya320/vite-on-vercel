@@ -1,8 +1,8 @@
 import { useToast } from '@chakra-ui/react'
-import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 
 type NavItem = {
-  id: string
+  to: string
   label: string
   badge?: string
   icon: JSX.Element
@@ -15,38 +15,38 @@ const G = (path: string) => (
 )
 
 const PRIMARY: NavItem[] = [
-  { id: 'overview', label: '概要', icon: G('M2 9l6-5 6 5v5H2V9zM7 14V11h2v3') },
-  { id: 'metrics', label: '指標', icon: G('M2 13V3M2 13h11M5 10V7M8 10V5M11 10V8') },
+  { to: '/', label: '概要', icon: G('M2 9l6-5 6 5v5H2V9zM7 14V11h2v3') },
+  { to: '/metrics', label: '指標', icon: G('M2 13V3M2 13h11M5 10V7M8 10V5M11 10V8') },
   {
-    id: 'org',
+    to: '/organizations',
     label: '組織別',
     badge: 'NEW',
     icon: G('M8 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM3 14a5 5 0 0 1 10 0'),
   },
-  { id: 'segment', label: 'セグメント', icon: G('M8 1v14M1 8h14M3 3l10 10M13 3L3 13') },
+  { to: '/segments', label: 'セグメント', icon: G('M8 1v14M1 8h14M3 3l10 10M13 3L3 13') },
 ]
 
 const OPS: NavItem[] = [
   {
-    id: 'incidents',
+    to: '/incidents',
     label: 'インシデント',
     badge: '3',
     icon: G('M8 1v6M8 11v.01M8 14a6 6 0 1 1 0-12 6 6 0 0 1 0 12z'),
   },
-  { id: 'jobs', label: 'バックグラウンド', icon: G('M3 8a5 5 0 0 1 9-3M13 8a5 5 0 0 1-9 3M12 2v3h-3M4 14v-3h3') },
-  { id: 'audit', label: '監査ログ', icon: G('M3 2h7l3 3v9H3V2zM10 2v3h3') },
+  { to: '/jobs', label: 'バックグラウンド', icon: G('M3 8a5 5 0 0 1 9-3M13 8a5 5 0 0 1-9 3M12 2v3h-3M4 14v-3h3') },
+  { to: '/audit', label: '監査ログ', icon: G('M3 2h7l3 3v9H3V2zM10 2v3h3') },
 ]
 
 const SETTINGS: NavItem[] = [
   {
-    id: 'team',
+    to: '/members',
     label: 'メンバー',
     icon: G(
       'M5 6a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM11 6a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM1 14a4 4 0 0 1 8 0M9 14a4 4 0 0 1 6 0',
     ),
   },
   {
-    id: 'settings',
+    to: '/settings',
     label: '設定',
     icon: G(
       'M8 10.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM8 1v2M8 13v2M2 8h2M12 8h2M3.5 3.5l1.5 1.5M11 11l1.5 1.5M3.5 12.5L5 11M11 5l1.5-1.5',
@@ -57,47 +57,35 @@ const SETTINGS: NavItem[] = [
 type SectionProps = {
   title: string
   items: NavItem[]
-  active: string
-  onSelect: (item: NavItem) => void
+  pathname: string
 }
 
-function Section({ title, items, active, onSelect }: SectionProps) {
+function Section({ title, items, pathname }: SectionProps) {
   return (
     <div>
       <div className="dash-side__group-title">{title}</div>
-      {items.map((item) => (
-        <button
-          key={item.id}
-          type="button"
-          className={`dash-side__item${active === item.id ? ' dash-side__item--active' : ''}`}
-          onClick={() => onSelect(item)}
-          aria-current={active === item.id ? 'page' : undefined}
-        >
-          <span className="dash-side__item-glyph">{item.icon}</span>
-          <span className="dash-side__item-label">{item.label}</span>
-          {item.badge && <span className="dash-side__item-badge">{item.badge}</span>}
-        </button>
-      ))}
+      {items.map((item) => {
+        const active = pathname === item.to
+        return (
+          <Link
+            key={item.to}
+            to={item.to}
+            className={`dash-side__item${active ? ' dash-side__item--active' : ''}`}
+            aria-current={active ? 'page' : undefined}
+          >
+            <span className="dash-side__item-glyph">{item.icon}</span>
+            <span className="dash-side__item-label">{item.label}</span>
+            {item.badge && <span className="dash-side__item-badge">{item.badge}</span>}
+          </Link>
+        )
+      })}
     </div>
   )
 }
 
 export default function Sidebar() {
   const toast = useToast()
-  const [active, setActive] = useState('overview')
-
-  function handleSelect(item: NavItem) {
-    setActive(item.id)
-    if (item.id !== 'overview') {
-      toast({
-        title: `${item.label} に切り替えました`,
-        description: '実装はモックです（このセッションでは概要のみレンダリングされます）',
-        status: 'info',
-        duration: 1600,
-        position: 'top-right',
-      })
-    }
-  }
+  const { pathname } = useLocation()
 
   return (
     <aside className="dash-side" aria-label="主要ナビゲーション">
@@ -106,14 +94,26 @@ export default function Sidebar() {
         <div className="dash-side__brand-name">Meridian Ops</div>
       </div>
       <nav className="dash-side__nav">
-        <Section title="概要" items={PRIMARY} active={active} onSelect={handleSelect} />
-        <Section title="運用" items={OPS} active={active} onSelect={handleSelect} />
-        <Section title="組織" items={SETTINGS} active={active} onSelect={handleSelect} />
+        <Section title="概要" items={PRIMARY} pathname={pathname} />
+        <Section title="運用" items={OPS} pathname={pathname} />
+        <Section title="組織" items={SETTINGS} pathname={pathname} />
       </nav>
-      <div className="dash-side__foot">
+      <button
+        type="button"
+        className="dash-side__foot"
+        onClick={() =>
+          toast({
+            title: 'ステータスページ',
+            description: '全システム正常稼働中（モック）',
+            status: 'success',
+            duration: 1500,
+            position: 'top-right',
+          })
+        }
+      >
         <span className="dash-side__foot-dot" />
         <span className="dash-side__foot-text">All systems operational · v4.2.0</span>
-      </div>
+      </button>
     </aside>
   )
 }

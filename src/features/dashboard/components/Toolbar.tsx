@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/react'
+import { useOrg } from '../orgContext'
+import { kpisByOrg } from '../data'
 import DateRangePicker from './DateRangePicker'
-import { kpis } from '../data'
 
 export type Range = { start: Date; end: Date }
 
@@ -14,7 +15,6 @@ const PRESETS: ReadonlyArray<{ id: PresetId; label: string; days: number }> = [
   { id: 'ytd', label: 'YTD', days: -1 },
 ]
 
-const ORGS = ['全社', 'Aoyama Holdings', 'Kitazawa Foods', 'Hanazono Logistics']
 const SEGMENTS = ['全プラン', 'Enterprise', 'Standard', 'Lite']
 
 type Props = {
@@ -22,8 +22,6 @@ type Props = {
   onRangeChange: (r: Range) => void
   presetId: PresetId
   onPresetChange: (id: PresetId) => void
-  org: string
-  onOrgChange: (v: string) => void
   segment: string
   onSegmentChange: (v: string) => void
   onRefresh: () => void
@@ -39,14 +37,13 @@ export default function Toolbar({
   onRangeChange,
   presetId,
   onPresetChange,
-  org,
-  onOrgChange,
   segment,
   onSegmentChange,
   onRefresh,
   isRefreshing,
 }: Props) {
   const toast = useToast()
+  const { activeOrg } = useOrg()
 
   function handlePreset(p: (typeof PRESETS)[number]) {
     onPresetChange(p.id)
@@ -69,21 +66,25 @@ export default function Toolbar({
   function exportCsv() {
     const rows: string[][] = [
       ['指標', '値', '前週比'],
-      ...kpis.map((k) => [k.label, k.value + (k.unit ?? ''), `${k.delta > 0 ? '+' : ''}${k.delta.toFixed(1)}%`]),
+      ...(kpisByOrg[activeOrg.id] ?? []).map((k) => [
+        k.label,
+        k.value + (k.unit ?? ''),
+        `${k.delta > 0 ? '+' : ''}${k.delta.toFixed(1)}%`,
+      ]),
     ]
     const csv = '﻿' + rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `dashboard-kpi-${ymd(range.start)}-${ymd(range.end)}.csv`
+    a.download = `${activeOrg.slug}-kpi-${ymd(range.start)}-${ymd(range.end)}.csv`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
     toast({
       title: 'CSVをエクスポートしました',
-      description: `${ymd(range.start)} – ${ymd(range.end)} の主要指標を出力`,
+      description: `${activeOrg.name} / ${ymd(range.start)} – ${ymd(range.end)} の主要指標を出力`,
       status: 'success',
       duration: 2400,
       isClosable: true,
@@ -96,7 +97,7 @@ export default function Toolbar({
       await navigator.clipboard.writeText(window.location.href)
       toast({
         title: '共有リンクをコピーしました',
-        description: 'クリップボードに現在のフィルタ付き URL を保存しました。',
+        description: 'クリップボードに現在の URL を保存しました。',
         status: 'info',
         duration: 2400,
         isClosable: true,
@@ -126,15 +127,6 @@ export default function Toolbar({
             {p.label}
           </button>
         ))}
-      </div>
-
-      <div className="dash-toolbar__group">
-        <span className="dash-select__label">対象組織</span>
-        <select className="dash-select" value={org} onChange={(e) => onOrgChange(e.target.value)} aria-label="対象組織">
-          {ORGS.map((o) => (
-            <option key={o}>{o}</option>
-          ))}
-        </select>
       </div>
 
       <div className="dash-toolbar__group">

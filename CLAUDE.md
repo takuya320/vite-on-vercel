@@ -17,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `src/main.tsx` がエントリ。`<RouterProvider router={router} />` と `<Analytics />`（`@vercel/analytics/react`）をマウントする唯一の場所。Analytics は本番環境のみ計測、ローカル/プレビューでは no-op。
 - `src/router.tsx` がルーティング定義の単一ソース。features を増やしたら必ずここに `path` と `element` を追加する。
-- `vercel.json` の `rewrites` が **クライアントサイドルーティングと表裏一体**: `/component-test` のようなルートを直リンクで開いても 200 を返すために `/((?!assets/).*)` を `/index.html` にフォールバックしている。新しい "予約パス" が増えるなら正規表現の見直しが必要。
+- `vercel.json` の `rewrites` が **クライアントサイドルーティングと表裏一体**: SPA サブパスを直リンクで開いても 200 を返すために `/((?!assets/).*)` を `/index.html` にフォールバックしている。新しい "予約パス" が増えるなら正規表現の見直しが必要。
 - `vercel.json#framework` は Vercel ダッシュボード設定より優先される。プロジェクト設定が想定と違う場合の真実は `vercel.json`。
 - ビルドは `pnpm build` = `tsc && vite build`。`tsc` が型チェックゲート、`vite build` が `dist/` を出力。`dist/` がそのまま静的配信される。
 
@@ -26,7 +26,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 `src/features/` の規約は README "Conventions" にあるが、Claude が新規ファイルを生成するときに踏み外しやすい点を再掲。
 
 - **1 機能 = 1 ディレクトリ**、`src/features/<kebab-case>/`。features 同士の相互 import は禁止。共通化したくなったら `src/` 直下のレイヤ（将来的に `src/components/` `src/lib/` 等）に引き上げる。
-- **エントリは `<PascalCase>.tsx`**（ディレクトリ名と対応する 1 ファイル）。これだけが `router.tsx` から参照される公開点。例: `button-test/ButtonTest.tsx`。
+- **エントリは `<PascalCase>.tsx`**（ディレクトリ名と対応する 1 ファイル）。これだけが `router.tsx` から参照される公開点。例: `dashboard/Dashboard.tsx`。
 - **機能内 UI 部品は `components/` (複数形)** に置く。`component/` (単数) を作らない（過去の揺れを統一済み）。
 - **テスト併置**: 対象ファイルの隣に `*.test.tsx` を置く。共通ヘルパー（`renderWithProviders` 等）のみ `src/test/` に集約。
 

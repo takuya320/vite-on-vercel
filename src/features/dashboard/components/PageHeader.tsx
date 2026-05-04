@@ -1,21 +1,24 @@
 import LastUpdated from './LastUpdated'
 
 type Props = {
-  lastUpdatedAt: string
+  eyebrow: string
+  title: string
+  subtitle?: string
+  lastUpdatedAt?: string
+  rightSlot?: React.ReactNode
 }
 
-export default function PageHeader({ lastUpdatedAt }: Props) {
+export default function PageHeader({ eyebrow, title, subtitle, lastUpdatedAt, rightSlot }: Props) {
   return (
     <header className="dash-pageheader dash-reveal" data-i={0}>
       <div>
-        <div className="dash-pageheader__eyebrow">業務概要 / 2026 Q2</div>
-        <h1 className="dash-pageheader__title">業務ダッシュボード</h1>
-        <p className="dash-pageheader__subtitle">
-          売上・運用状況・インシデントを一画面で把握できます。各指標から詳細ページへ遷移できます。
-        </p>
+        <div className="dash-pageheader__eyebrow">{eyebrow}</div>
+        <h1 className="dash-pageheader__title">{title}</h1>
+        {subtitle && <p className="dash-pageheader__subtitle">{subtitle}</p>}
       </div>
       <div className="dash-pageheader__meta">
-        <LastUpdated at={lastUpdatedAt} />
+        {rightSlot}
+        {lastUpdatedAt && <LastUpdated at={lastUpdatedAt} />}
       </div>
     </header>
   )

@@ -1,10 +1,13 @@
 import { useToast } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
+import { currentUserId, users } from '../data'
+import OrgSwitcher from './OrgSwitcher'
 
 export default function Header() {
   const toast = useToast()
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const me = users.find((u) => u.id === currentUserId)!
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -35,11 +38,7 @@ export default function Header() {
 
   return (
     <header className="dash-head">
-      <div className="dash-head__crumb">
-        <span>ワークスペース</span>
-        <span className="dash-head__crumb-sep">/</span>
-        <b>概要</b>
-      </div>
+      <OrgSwitcher />
       <form className="dash-head__search" onSubmit={submit} role="search">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
           <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.4" />
@@ -98,10 +97,10 @@ export default function Header() {
           })
         }
       >
-        <div className="dash-head__user-avatar">YT</div>
+        <div className="dash-head__user-avatar">{me.initials}</div>
         <div>
-          <div className="dash-head__user-name">山田 太郎</div>
-          <div className="dash-head__user-role">管理者</div>
+          <div className="dash-head__user-name">{me.name}</div>
+          <div className="dash-head__user-role">あなた</div>
         </div>
       </button>
     </header>
