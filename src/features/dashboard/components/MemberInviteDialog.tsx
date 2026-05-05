@@ -167,13 +167,13 @@ export default function MemberInviteDialog({ isOpen, onClose }: Props) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl" isCentered scrollBehavior="inside">
-      <ModalOverlay bg="rgba(24, 20, 16, 0.45)" backdropFilter="blur(2px)" />
+      <ModalOverlay bg="var(--dash-modal-overlay)" backdropFilter="blur(2px)" />
       <ModalContent
-        bg="#ffffff"
-        color="#181410"
+        bg="var(--dash-surface-2)"
+        color="var(--dash-ink)"
         borderRadius="12px"
-        border="1px solid #d8cebd"
-        boxShadow="0 30px 80px -20px rgba(24, 20, 16, 0.45)"
+        border="1px solid var(--dash-rule)"
+        boxShadow="var(--dash-shadow-2)"
         fontFamily="'Plus Jakarta Sans', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif"
       >
         <ModalHeader pb={2}>
@@ -185,7 +185,7 @@ export default function MemberInviteDialog({ isOpen, onClose }: Props) {
               fontWeight: 500,
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
-              color: '#8c8275',
+              color: 'var(--dash-ink-3)',
               marginTop: 4,
             }}
           >
@@ -318,8 +318,8 @@ export default function MemberInviteDialog({ isOpen, onClose }: Props) {
             </div>
           </div>
         </ModalBody>
-        <ModalFooter borderTop="1px solid #d8cebd" gap={2}>
-          <div style={{ flex: 1, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#8c8275' }}>
+        <ModalFooter borderTop="1px solid var(--dash-rule)" gap={2}>
+          <div style={{ flex: 1, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--dash-ink-3)' }}>
             {emails.length > 0 ? `${emails.length} 件の招待を送信予定` : ''}
           </div>
           <button className="dash-btn" type="button" onClick={onClose}>

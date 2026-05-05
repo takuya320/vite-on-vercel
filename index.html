@@ -11,6 +11,20 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700&family=Plus+Jakarta+Sans:wght@400..700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      // Avoid FOUC: apply persisted Chakra color mode before React mounts.
+      // Chakra v2 stores under `chakra-ui-color-mode` and reads `data-theme` on html.
+      (function () {
+        try {
+          var t = window.localStorage.getItem('chakra-ui-color-mode');
+          var v = t === 'dark' || t === 'light' ? t : 'light';
+          document.documentElement.setAttribute('data-theme', v);
+          document.documentElement.style.colorScheme = v;
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

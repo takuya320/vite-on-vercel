@@ -2,6 +2,7 @@ import { useToast } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { currentUserId, users } from '../data'
 import OrgSwitcher from './OrgSwitcher'
+import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
   const toast = useToast()
@@ -55,6 +56,7 @@ export default function Header() {
         <kbd>⌘K</kbd>
       </form>
       <div className="dash-head__spacer" />
+      <ThemeToggle />
       <span className="dash-head__env" title="環境: 本番">
         <span className="dash-head__env-dot" /> PRODUCTION
       </span>

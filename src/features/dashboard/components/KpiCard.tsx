@@ -63,13 +63,13 @@ export default function KpiCard({ kpi, invert = false, index = 0, loading = fals
           fontSize="12px"
           fontWeight={500}
           lineHeight="1.5"
-          bg="#181410"
-          color="#F3EDE0"
+          bg="var(--dash-popover-bg)"
+          color="var(--dash-popover-fg)"
           px="10px"
           py="8px"
           borderRadius="6px"
           maxW="280px"
-          boxShadow="0 8px 24px -8px rgba(24, 20, 16, 0.35)"
+          boxShadow="var(--dash-shadow-2)"
         >
           <span className="dash-kpi__help" aria-label="指標の説明" onClick={(e) => e.stopPropagation()}>
             ?

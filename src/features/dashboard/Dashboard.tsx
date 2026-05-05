@@ -1,4 +1,4 @@
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
+import { ChakraProvider, extendTheme, type ThemeConfig } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import Header from './components/Header'
@@ -6,7 +6,13 @@ import Sidebar from './components/Sidebar'
 import { OrgProvider } from './orgContext'
 import './dashboard.css'
 
+const config: ThemeConfig = {
+  initialColorMode: 'light',
+  useSystemColorMode: false,
+}
+
 const theme = extendTheme({
+  config,
   fonts: {
     body: "'Plus Jakarta Sans', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif",
     heading: "'Plus Jakarta Sans', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif",

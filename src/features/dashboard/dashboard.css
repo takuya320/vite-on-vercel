@@ -3,8 +3,9 @@
    Cream paper × Fraunces serif × JetBrains Mono
    ========================================================= */
 
-:root {
-  /* Tokens are declared on :root so they resolve inside Portal'd content
+:root,
+:root[data-theme='light'] {
+  /* Tokens declared on :root so they resolve inside Portal'd content
      (Chakra Modal/Tooltip render to document.body). */
   --dash-bg: #f3ede0;
   --dash-bg-2: #ece4d3;
@@ -29,11 +30,64 @@
   --dash-warn-soft: #f0dfba;
   --dash-amber: #d99a1f;
 
+  /* Surfaces / overlays / interaction */
+  --dash-head-bg: rgba(243, 237, 224, 0.85);
+  --dash-focus-ring: rgba(24, 20, 16, 0.06);
+  --dash-overlay-hover: var(--dash-overlay-hover);
+  --dash-overlay-hover-strong: var(--dash-overlay-hover-strong);
+  --dash-popover-bg: #181410;
+  --dash-popover-fg: #f3ede0;
+  --dash-modal-overlay: rgba(24, 20, 16, 0.45);
+  --dash-grain-opacity: 0.55;
+  --dash-grain-blend: multiply;
+
   --dash-font-body: 'Plus Jakarta Sans', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif;
   --dash-font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
 
-  --dash-shadow-1: 0 1px 0 rgba(24, 20, 16, 0.04), 0 1px 3px rgba(24, 20, 16, 0.06);
+  --dash-shadow-1: 0 1px 0 var(--dash-overlay-hover), 0 1px 3px rgba(24, 20, 16, 0.06);
   --dash-shadow-2: 0 1px 0 rgba(24, 20, 16, 0.06), 0 6px 20px -6px rgba(24, 20, 16, 0.12);
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --dash-bg: #14181d;
+  --dash-bg-2: #1a1f26;
+  --dash-surface: #1e242c;
+  --dash-surface-2: #262d36;
+  --dash-ink: #e8e3d8;
+  --dash-ink-2: #b8aea0;
+  --dash-ink-3: #7d7468;
+  --dash-ink-4: #58504a;
+  --dash-rule: #2a3038;
+  --dash-rule-strong: #3a4048;
+  --dash-accent: #e85a3c;
+  --dash-accent-deep: #c73e1d;
+  --dash-accent-soft: #3a201a;
+  --dash-teal: #5da9b4;
+  --dash-teal-soft: #1c3034;
+  --dash-positive: #5fb380;
+  --dash-positive-soft: #1f3024;
+  --dash-negative: #e36b58;
+  --dash-negative-soft: #3a1f1a;
+  --dash-warn: #d6a956;
+  --dash-warn-soft: #3a2e18;
+  --dash-amber: #d99a1f;
+
+  --dash-head-bg: rgba(20, 24, 29, 0.78);
+  --dash-focus-ring: rgba(255, 255, 255, 0.08);
+  --dash-overlay-hover: rgba(255, 255, 255, 0.05);
+  --dash-overlay-hover-strong: rgba(255, 255, 255, 0.07);
+  --dash-popover-bg: #262d36;
+  --dash-popover-fg: #e8e3d8;
+  --dash-modal-overlay: rgba(0, 0, 0, 0.6);
+  --dash-grain-opacity: 0.18;
+  --dash-grain-blend: screen;
+
+  --dash-shadow-1: 0 1px 0 rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.35);
+  --dash-shadow-2: 0 1px 0 rgba(0, 0, 0, 0.5), 0 8px 24px -6px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
 }
 
 .dash-root {
@@ -82,8 +136,8 @@ body.dash-active #root {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.55;
-  mix-blend-mode: multiply;
+  opacity: var(--dash-grain-opacity);
+  mix-blend-mode: var(--dash-grain-blend);
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0 0.06  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
@@ -97,7 +151,7 @@ body.dash-active #root {
 .dash-side {
   grid-area: side;
   border-right: 1px solid var(--dash-rule);
-  background: linear-gradient(180deg, #f9f3e6 0%, #ece4d3 100%);
+  background: linear-gradient(180deg, var(--dash-bg) 0%, var(--dash-bg-2) 100%);
   display: flex;
   flex-direction: column;
   z-index: 1;
@@ -194,7 +248,7 @@ body.dash-active #root {
 }
 
 .dash-side__item:hover {
-  background: rgba(24, 20, 16, 0.045);
+  background: var(--dash-overlay-hover);
   color: var(--dash-ink);
 }
 
@@ -269,7 +323,7 @@ body.dash-active #root {
   transition: background 120ms ease;
 }
 .dash-side__foot:hover {
-  background: rgba(24, 20, 16, 0.04);
+  background: var(--dash-overlay-hover);
   color: var(--dash-ink-2);
 }
 .dash-side__foot-dot {
@@ -289,7 +343,7 @@ body.dash-active #root {
 .dash-head {
   grid-area: head;
   border-bottom: 1px solid var(--dash-rule);
-  background: rgba(243, 237, 224, 0.85);
+  background: var(--dash-head-bg);
   backdrop-filter: blur(10px) saturate(120%);
   -webkit-backdrop-filter: blur(10px) saturate(120%);
   display: flex;
@@ -402,7 +456,7 @@ body.dash-active #root {
   transition: background 120ms ease;
 }
 .dash-head__icon-btn:hover {
-  background: rgba(24, 20, 16, 0.055);
+  background: var(--dash-overlay-hover-strong);
 }
 .dash-head__icon-btn-dot {
   position: absolute;
@@ -436,7 +490,7 @@ body.dash-active #root {
 .dash-head__user:focus-visible {
   outline: none;
   border-color: var(--dash-ink);
-  box-shadow: 0 0 0 3px rgba(24, 20, 16, 0.06);
+  box-shadow: 0 0 0 3px var(--dash-focus-ring);
 }
 .dash-head__user-avatar {
   width: 26px;
@@ -973,7 +1027,7 @@ body.dash-active #root {
   color: var(--dash-ink-2);
 }
 .dash-btn--ghost:hover {
-  background: rgba(24, 20, 16, 0.055);
+  background: var(--dash-overlay-hover-strong);
   border-color: transparent;
   color: var(--dash-ink);
 }
@@ -1641,12 +1695,10 @@ body.dash-active #root {
   top: calc(100% + 6px);
   left: 0;
   min-width: 280px;
-  background-color: #ffffff;
-  border: 1px solid #d8cebd;
+  background-color: var(--dash-surface-2);
+  border: 1px solid var(--dash-rule);
   border-radius: 10px;
-  box-shadow:
-    0 1px 0 rgba(24, 20, 16, 0.06),
-    0 12px 32px -10px rgba(24, 20, 16, 0.28);
+  box-shadow: var(--dash-shadow-2);
   padding: 6px;
   z-index: 1000;
   animation: dash-cal-in 140ms cubic-bezier(0.2, 0.65, 0.25, 1);
@@ -1666,19 +1718,19 @@ body.dash-active #root {
   width: 100%;
   padding: 8px;
   border: none;
-  background-color: #ffffff;
+  background-color: var(--dash-surface-2);
   border-radius: 6px;
   cursor: pointer;
   font: inherit;
-  color: #181410;
+  color: var(--dash-ink);
   text-align: left;
   transition: background-color 100ms ease;
 }
 .dash-orgswitch__item:hover {
-  background-color: #f3ede0;
+  background-color: var(--dash-bg);
 }
 .dash-orgswitch__item--active {
-  background-color: #ece4d3;
+  background-color: var(--dash-bg-2);
 }
 
 @media (max-width: 720px) {
@@ -1909,7 +1961,7 @@ body.dash-active #root {
 .dash-form-input:focus,
 .dash-form-textarea:focus {
   border-color: var(--dash-ink);
-  box-shadow: 0 0 0 3px rgba(24, 20, 16, 0.06);
+  box-shadow: 0 0 0 3px var(--dash-focus-ring);
 }
 .dash-form-textarea {
   resize: vertical;
@@ -1987,7 +2039,7 @@ body.dash-active #root {
 }
 .dash-email-chips:focus-within {
   border-color: var(--dash-ink);
-  box-shadow: 0 0 0 3px rgba(24, 20, 16, 0.06);
+  box-shadow: 0 0 0 3px var(--dash-focus-ring);
 }
 .dash-email-chip {
   display: inline-flex;
@@ -2066,7 +2118,7 @@ body.dash-active #root {
   border-color: var(--dash-ink);
   background: var(--dash-surface-2);
   box-shadow:
-    0 0 0 3px rgba(24, 20, 16, 0.05),
+    0 0 0 3px var(--dash-focus-ring),
     var(--dash-shadow-1);
 }
 .dash-role-card__title {
@@ -2189,7 +2241,7 @@ body.dash-active #root {
 /* Search input */
 .dash-head__search:focus-within {
   border-color: var(--dash-ink);
-  box-shadow: 0 0 0 3px rgba(24, 20, 16, 0.06);
+  box-shadow: 0 0 0 3px var(--dash-focus-ring);
 }
 .dash-head__search-input {
   flex: 1;
