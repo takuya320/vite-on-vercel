@@ -1,12 +1,7 @@
 import { useMemo, useState } from 'react'
 import DataTable from '../components/DataTable'
 import PageHeader from '../components/PageHeader'
-import {
-  INTERVENTION_TYPE_LABEL,
-  interventions,
-  type InterventionStatus,
-  type InterventionType,
-} from '../data'
+import { INTERVENTION_TYPE_LABEL, interventions, type InterventionStatus, type InterventionType } from '../data'
 import { useOrg } from '../orgContext'
 
 const STATUS_TABS: ReadonlyArray<{ id: 'all' | InterventionStatus; label: string }> = [
@@ -27,10 +22,7 @@ export default function InterventionsPage() {
   const [tab, setTab] = useState<(typeof STATUS_TABS)[number]['id']>('all')
   const [type, setType] = useState<(typeof TYPE_OPTIONS)[number]['id']>('all')
 
-  const orgInterventions = useMemo(
-    () => interventions.filter((i) => i.organizationId === activeOrg.id),
-    [activeOrg.id],
-  )
+  const orgInterventions = useMemo(() => interventions.filter((i) => i.organizationId === activeOrg.id), [activeOrg.id])
 
   const stats = useMemo(() => {
     return {

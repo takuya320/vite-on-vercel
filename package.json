@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "prettier --write src/**/*.{ts,tsx} --config ./prettier.config.cjs",
+    "lint": "prettier --write 'src/**/*.{ts,tsx}' --config ./prettier.config.cjs",
+    "check": "prettier --check 'src/**/*.{ts,tsx}' --config ./prettier.config.cjs",
     "preview": "vite preview",
     "test": "vitest run",
     "coverage": "vitest run --coverage"

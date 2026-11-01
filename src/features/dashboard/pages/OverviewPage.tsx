@@ -113,13 +113,7 @@ export default function OverviewPage() {
 
       <section className="dash-kpi-grid" aria-label="主要指標">
         {kpis.map((kpi, i) => (
-          <KpiCard
-            key={kpi.id}
-            kpi={kpi}
-            index={i}
-            loading={isRefreshing}
-            onClick={() => openKpi(kpi)}
-          />
+          <KpiCard key={kpi.id} kpi={kpi} index={i} loading={isRefreshing} onClick={() => openKpi(kpi)} />
         ))}
       </section>
 

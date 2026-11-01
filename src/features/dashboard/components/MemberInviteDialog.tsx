@@ -162,8 +162,7 @@ export default function MemberInviteDialog({ isOpen, onClose }: Props) {
 
   const defaultPermsForRole = ROLE_DEFAULT_PERMISSIONS[role]
   const isDefaultPerms =
-    permissions.length === defaultPermsForRole.length &&
-    defaultPermsForRole.every((p) => permissions.includes(p))
+    permissions.length === defaultPermsForRole.length && defaultPermsForRole.every((p) => permissions.includes(p))
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl" isCentered scrollBehavior="inside">
@@ -201,7 +200,7 @@ export default function MemberInviteDialog({ isOpen, onClose }: Props) {
               <div
                 className="dash-email-chips"
                 onClick={(e) => {
-                  const input = (e.currentTarget.querySelector('input') as HTMLInputElement | null)
+                  const input = e.currentTarget.querySelector('input') as HTMLInputElement | null
                   input?.focus()
                 }}
               >
