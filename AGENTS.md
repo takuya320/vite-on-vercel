@@ -71,6 +71,15 @@ Solo project: no external contributors are expected, so these rules exist for co
 - **Pull requests**: one purpose per PR; title in the same format as a commit subject; description follows `.github/pull_request_template.md` (in Japanese). CI (`pnpm check` and `pnpm test`) must pass before merging.
 - **Code comments**: English, and only for **why** and **why not**: non-obvious constraints, workaround reasons, deliberate behavior, and improvements knowingly skipped. Express what the code does through naming and types. `TODO` / `FIXME` carry a reason or issue number; use `FIXME` when knowingly taking on technical debt.
 
+### Claude Code hooks
+
+`.claude/settings.json` (committed) defines two hooks. They are a convenience, not a gate: CI (`pnpm check`) is still the source of truth.
+
+- **SessionStart**: runs `git fetch origin` and warns when the current branch is behind `origin/main`. Dependabot merges often, so rebase before starting work.
+- **PostToolUse (Edit|Write)**: runs Prettier on edited `src/**/*.{ts,tsx}` files, so `pnpm check` rarely fails on formatting.
+
+Personal overrides go in `.claude/settings.local.json` (gitignored).
+
 ### CI and Dependabot
 
 - CI (`.github/workflows/test.yml`) runs on PRs and on pushes to `main`. It uses `pnpm install --frozen-lockfile`, so **always commit `pnpm-lock.yaml`** when dependencies change.
@@ -83,7 +92,7 @@ Solo project: no external contributors are expected, so these rules exist for co
 - Secrets only via environment variables; the client bundle is public, so nothing secret may carry the `VITE_` prefix.
 - This repository is public. Never commit `.env*` (except `.env.example`), tokens, or `.vercel/` contents.
 - Run `pnpm audit` regularly (CI does so weekly).
-- Vulnerability reports: see `SECURITY.md`. For a code review, use the `security-review` skill in `.claude/skills/`.
+- Vulnerability reports: see `SECURITY.md`. For a code review, use the `security-review` skill in `.claude/skills/` (Claude Code only).
 
 ## Language
 
