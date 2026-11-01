@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   frontend-test:
     runs-on: ubuntu-latest
@@ -19,7 +22,7 @@ jobs:
           cache: 'pnpm'
       - name: Install Deps
         run: pnpm install --frozen-lockfile
-      - name: Lint
-        run: pnpm lint
+      - name: Format check
+        run: pnpm check
       - name: Test
         run: pnpm test

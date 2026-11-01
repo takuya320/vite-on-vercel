@@ -8,12 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { useState } from 'react'
-import {
-  INTERVENTION_TYPE_LABEL,
-  type Intervention,
-  type InterventionImpact,
-  type InterventionStatus,
-} from '../data'
+import { INTERVENTION_TYPE_LABEL, type Intervention, type InterventionImpact, type InterventionStatus } from '../data'
 import StatusBadge from './StatusBadge'
 
 type Props = {

@@ -16,9 +16,9 @@ Next.js / Remix のような SSR フレームワークではなく、あえて *
 
 ## Tech Stack
 
-- [Vite](https://vitejs.dev/) 8 + [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc)
+- [Vite](https://vitejs.dev/) 8 + [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react)
 - [React](https://react.dev/) 18
-- [React Router](https://reactrouter.com/) v6 (Browser Router)
+- [React Router](https://reactrouter.com/) v7 (Browser Router)
 - [Chakra UI](https://chakra-ui.com/) v2
 - [TanStack Table](https://tanstack.com/table) v8
 - [Vitest](https://vitest.dev/) 4 + v8 coverage
@@ -35,7 +35,7 @@ Next.js / Remix のような SSR フレームワークではなく、あえて *
 ## Getting Started
 
 ```sh
-nvm use            # .nvmrc に従い Node 22 を有効化
+nvm use            # .nvmrc に従い Node 24 を有効化
 pnpm install
 pnpm dev
 ```
@@ -51,15 +51,25 @@ pnpm dev
 | `pnpm preview`    | ビルド結果をローカルでプレビュー                           |
 | `pnpm test`       | Vitest をワンショット実行                                  |
 | `pnpm coverage`   | Vitest をカバレッジ付きで実行                              |
-| `pnpm lint`       | `src` 配下を Prettier でフォーマット                       |
+| `pnpm lint`       | `src` 配下を Prettier でフォーマット (ファイルを書き換える) |
+| `pnpm check`      | `src` 配下のフォーマットを検証 (書き換えない。CI で使用)   |
 
 ## Routes
 
-| Path | コンポーネント                         |
-| ---- | -------------------------------------- |
-| `/`  | `src/features/dashboard/Dashboard.tsx` |
+`src/features/dashboard/Dashboard.tsx` がレイアウト (`/`) で、各ページは `src/features/dashboard/pages/` 配下の子ルートです。
 
-ルーティング定義は `src/router.tsx` にあります。現状のページは業務ダッシュボードのみ。
+| Path             | コンポーネント      |
+| ---------------- | ------------------- |
+| `/`              | `OverviewPage`      |
+| `/metrics`       | `MetricsPage`       |
+| `/organizations` | `OrganizationsPage` |
+| `/segments`      | `SegmentsPage`      |
+| `/interventions` | `InterventionsPage` |
+| `/audit`         | `AuditPage`         |
+| `/members`       | `MembersPage`       |
+| `/settings`      | `SettingsPage`      |
+
+ルーティング定義は `src/router.tsx` にあります。現状の機能は業務ダッシュボード (`features/dashboard`) のみ。
 
 ## Project Structure
 
@@ -67,13 +77,16 @@ pnpm dev
 src/
 ├─ main.tsx             # エントリポイント (RouterProvider + Analytics)
 ├─ router.tsx           # React Router 定義
+├─ index.css            # グローバルスタイル
 ├─ features/            # 機能単位のページ
 │  └─ dashboard/
 │     ├─ Dashboard.tsx        # ルートコンポーネント (PascalCase = 機能名)
 │     ├─ dashboard.css        # Dashboard 局所スコープのスタイル
 │     ├─ data.ts              # ダミーデータ
+│     ├─ orgContext.tsx       # 組織選択のコンテキスト
+│     ├─ pages/               # ルートごとのページ (router.tsx の子ルート)
 │     └─ components/          # 機能内で閉じる UI 部品
-└─ test/                # Vitest 用ユーティリティ
+└─ test/                # テスト置き場 (現状はサンプルテストのみ)
 ```
 
 ## Conventions
@@ -124,7 +137,8 @@ src/
 
 ## CI / Dependency Management
 
-- **CI**: `.github/workflows/test.yml` が PR トリガーで `pnpm lint` と `pnpm test` を実行
+- **CI**: `.github/workflows/test.yml` が PR と `main` への push で `pnpm check` と `pnpm test` を実行
+- **脆弱性監査**: `.github/workflows/audit.yml` が PR・`main` への push・毎週月曜に `pnpm audit --audit-level=high` を実行
   - `actions/setup-node` で `.nvmrc` の Node バージョンに合わせ、pnpm キャッシュを有効化
   - `pnpm install --frozen-lockfile` により `pnpm-lock.yaml` を信頼の単一ソースとして扱う
 - **Lockfile**: `pnpm-lock.yaml` は必ずコミット。Vercel ビルドおよび CI 双方が frozen install を期待するため、ローカルでの `pnpm install` 結果も含めて PR に乗せる
@@ -133,13 +147,14 @@ src/
 
 ## Lint / Formatting
 
-- **`pnpm lint` は Prettier の `--write` を呼ぶフォーマッタコマンド**で、ESLint は現状未導入です。CI でも同コマンドを実行するため、フォーマット差分が残った PR は失敗します
+- **`pnpm lint` は Prettier の `--write` を呼ぶフォーマッタコマンド**で、ESLint は現状未導入です。CI は書き換えない `pnpm check` (`prettier --check`) を実行するため、フォーマット差分が残った PR は失敗します。手元では `pnpm lint` で整形してからコミットしてください
 - **ESLint 不在の理由**: 本リポジトリはコンポーネント検証用途で実装範囲が小さく、`tsc` の型チェックと Prettier の整形で実害が出ていないため。React/TS のリンターを入れるなら `typescript-eslint` + `eslint-plugin-react-hooks` + `eslint-plugin-react-refresh` の最小セットを想定 (今後の拡張時に検討)
 - **コマンド名の注意**: `lint` という名前ですが静的解析は行いません。ルール違反検出ではなく整形目的です
 
 ## Testing Strategy
 
-> 現状はサンプルテストのみ。以降は本セクションを **方針** として扱います。
+> 現状はサンプルテスト (`src/test/test.test.ts`) のみ。以降は本セクションを **方針** として扱います。
+> `@testing-library/react` と jsdom は未導入のため、最初のコンポーネントテストを書くときに追加し、`vite.config.ts` の `test.environment` を設定します。
 
 ### 何をテストするか / しないか
 
@@ -168,3 +183,9 @@ src/
 - 対象ファイルと **同一ディレクトリ** に `*.test.tsx` / `*.test.ts` を置く
 - 共有のテストユーティリティ (factory, MSW handler 等) は `src/test/` に集約
 - 統合的にレンダリングを行うヘルパー (`renderWithProviders` 等) を `src/test/` に追加することを推奨
+
+## Security / License
+
+- 脆弱性の報告方法は [SECURITY.md](./SECURITY.md) を参照してください
+- AI コーディングエージェント向けのガイドは [AGENTS.md](./AGENTS.md) にあります (`CLAUDE.md` は同ファイルを参照)
+- ライセンス: [MIT](./LICENSE)
