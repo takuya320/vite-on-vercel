@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git fetch origin --quiet 2>/dev/null; n=$(git rev-list --count HEAD..origin/main 2>/dev/null); if [ \"${n:-0}\" -gt 0 ]; then echo \"WARNING: the current branch is $n commit(s) behind origin/main. Rebase onto origin/main before starting work, or the PR will conflict (Dependabot merges often).\"; fi",
+            "timeout": 30,
+            "statusMessage": "Checking for upstream changes..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_response.filePath // .tool_input.file_path' | { read -r f; case \"$f\" in */src/*.ts|*/src/*.tsx) node_modules/.bin/prettier --write \"$f\" --config ./prettier.config.cjs ;; esac; } 2>/dev/null || true",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
