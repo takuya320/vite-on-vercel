@@ -44,32 +44,19 @@ pnpm dev
 
 ## Scripts
 
-| コマンド          | 内容                                                       |
-| ----------------- | ---------------------------------------------------------- |
-| `pnpm dev`        | 開発サーバーを起動                                         |
-| `pnpm build`      | 型チェック (`tsc`) と本番ビルド (`vite build`)             |
-| `pnpm preview`    | ビルド結果をローカルでプレビュー                           |
-| `pnpm test`       | Vitest をワンショット実行                                  |
-| `pnpm coverage`   | Vitest をカバレッジ付きで実行                              |
-| `pnpm lint`       | `src` 配下を Prettier でフォーマット (ファイルを書き換える) |
-| `pnpm check`      | `src` 配下のフォーマットを検証 (書き換えない。CI で使用)   |
+| コマンド          | 内容                                           |
+| ----------------- | ---------------------------------------------- |
+| `pnpm dev`        | 開発サーバーを起動                             |
+| `pnpm build`      | 型チェック (`tsc`) と本番ビルド (`vite build`) |
+| `pnpm preview`    | ビルド結果をローカルでプレビュー               |
+| `pnpm test`       | Vitest をワンショット実行                      |
+| `pnpm coverage`   | Vitest をカバレッジ付きで実行                  |
+| `pnpm lint`       | `src` 配下を Prettier で整形                   |
+| `pnpm check`      | `src` 配下の整形を検証 (CI で使用)             |
 
 ## Routes
 
-`src/features/dashboard/Dashboard.tsx` がレイアウト (`/`) で、各ページは `src/features/dashboard/pages/` 配下の子ルートです。
-
-| Path             | コンポーネント      |
-| ---------------- | ------------------- |
-| `/`              | `OverviewPage`      |
-| `/metrics`       | `MetricsPage`       |
-| `/organizations` | `OrganizationsPage` |
-| `/segments`      | `SegmentsPage`      |
-| `/interventions` | `InterventionsPage` |
-| `/audit`         | `AuditPage`         |
-| `/members`       | `MembersPage`       |
-| `/settings`      | `SettingsPage`      |
-
-ルーティング定義は `src/router.tsx` にあります。現状の機能は業務ダッシュボード (`features/dashboard`) のみ。
+ルーティング定義は `src/router.tsx` にあります。ページは `src/features/dashboard/` 配下の業務ダッシュボードのみ。
 
 ## Project Structure
 
@@ -77,14 +64,12 @@ pnpm dev
 src/
 ├─ main.tsx             # エントリポイント (RouterProvider + Analytics)
 ├─ router.tsx           # React Router 定義
-├─ index.css            # グローバルスタイル
 ├─ features/            # 機能単位のページ
 │  └─ dashboard/
 │     ├─ Dashboard.tsx        # ルートコンポーネント (PascalCase = 機能名)
 │     ├─ dashboard.css        # Dashboard 局所スコープのスタイル
 │     ├─ data.ts              # ダミーデータ
-│     ├─ orgContext.tsx       # 組織選択のコンテキスト
-│     ├─ pages/               # ルートごとのページ (router.tsx の子ルート)
+│     ├─ pages/               # ルートごとのページ
 │     └─ components/          # 機能内で閉じる UI 部品
 └─ test/                # テスト置き場 (現状はサンプルテストのみ)
 ```
