@@ -10,8 +10,8 @@ Vite + React SPA hosted on Vercel, deliberately chosen over Next.js / Remix (rat
 
 The command list for humans is in README "Scripts". Notes for agents only:
 
-- **pnpm is pinned to `pnpm@10.33.2`** (`package.json#packageManager`). An older local pnpm fails immediately with `ERR_PNPM_BAD_PM_VERSION`; run `corepack pnpm <subcommand>` instead. Verification works even when `pnpm install` has not completed.
-- **Node.js `>=24.0.0`** (`.nvmrc` = `24`, matches the Vercel default). CI reads `.nvmrc` via `actions/setup-node`, so a local Node mismatch can pass locally and fail in CI.
+- **pnpm is pinned to `pnpm@10.33.2`** (`package.json#packageManager`). An older local pnpm fails immediately with `ERR_PNPM_BAD_PM_VERSION`. Node 25+ no longer bundles Corepack, so install the pinned version directly (`npm i -g pnpm@10.33.2`, or `mise use pnpm@10.33.2`). Verification works even when `pnpm install` has not completed.
+- **Node.js 26.x** (`package.json#engines.node` = `26.x`, `.nvmrc` = `26`). Vercel only accepts a major version here and rolls minor/patch updates itself, so do not pin a patch. CI reads `.nvmrc` via `actions/setup-node`, so a local Node mismatch can pass locally and fail in CI; an older local Node only produces an `Unsupported engine` warning (`engine-strict` is off).
 - **Single test**: `pnpm vitest run <pathOrPattern>` or `pnpm vitest run -t '<test name pattern>'`. Drop `run` to watch.
 - **Final checks that CI always runs**: `pnpm check` → `pnpm test`. Run both locally after any code change.
 - **`pnpm lint` rewrites files** (`prettier --write`); `pnpm check` only verifies (`prettier --check`). Use `lint` to fix, `check` to confirm. There is no ESLint, so neither command does static analysis. Do not add ESLint unprompted; if it is ever added, the intended minimum is `typescript-eslint` + `eslint-plugin-react-hooks` + `eslint-plugin-react-refresh`.
