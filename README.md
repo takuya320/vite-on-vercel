@@ -27,7 +27,7 @@ Next.js / Remix のような SSR フレームワークではなく、あえて *
 
 ## Requirements
 
-- **Node.js `>=24.0.0`** (`.nvmrc` で `24` を指定 / Node 24 LTS、Vercel のデフォルトランタイムに整合)
+- **Node.js 26.x** (`.nvmrc` で `26` を指定 / Node 26 LTS、Vercel の最新サポートメジャーに整合)
 - **pnpm 10** (`package.json` の `packageManager` で固定)
 
 `nvm` 利用者は `nvm use` で `.nvmrc` のバージョンに切り替わります。
@@ -35,7 +35,7 @@ Next.js / Remix のような SSR フレームワークではなく、あえて *
 ## Getting Started
 
 ```sh
-nvm use            # .nvmrc に従い Node 24 を有効化
+nvm use            # .nvmrc に従い Node 26 を有効化
 pnpm install
 pnpm dev
 ```
